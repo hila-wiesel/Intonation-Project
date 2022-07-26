@@ -5,12 +5,12 @@ There are sentences that have several meanings, depending on how the sentence is
 For example:
 The sentence "I did not still the bag from you" can be interpreted in several ways, depending on the word that the speaker emphasizes (underlined):
 
-1. "I did not  _still the bag from you" - I did not steal the bag, I may have taken or asked.
+1. "I did not  *still the bag from you" - I did not steal the bag, I may have taken or asked.
 The emphasis is on the act of stealing, which the speaker wants to deny.
 
-2. "I did not still the _bag from you" - I did not steal the bag, it is possible that I stole something else from you. The emphasis is on the stolen object, the speaker wants to deny that the stolen object is a bag.
+2. "I did not still the *bag from you" - I did not steal the bag, it is possible that I stole something else from you. The emphasis is on the stolen object, the speaker wants to deny that the stolen object is a bag.
 
-3. "I did not still the bag from _you" - I did not steal from you. The negation is about who the bag was stolen from. The speaker wants to rule out that the bag was stolen from you (it may have been stolen by me, from someone else).
+3. "I did not still the bag from *you" - I did not steal from you. The negation is about who the bag was stolen from. The speaker wants to rule out that the bag was stolen from you (it may have been stolen by me, from someone else).
 
 Humans distinguish between the change in meaning naturally, but it is difficult to point to a certain legality that determines the difference.
 
@@ -29,8 +29,7 @@ Output: Analysis of the sentence meaning of the first audio
 #### The process:
 
 
-![image](https://user-images.githubusercontent.com/61710157/180999688-9f5590f6-1a2b-4b4f-a4af-6ee182231911.png)
-
+![image](https://user-images.githubusercontent.com/61710157/181000117-1b5e95f3-b3e3-4597-a1ad-33bcc3296d3c.png)
 
 
 
