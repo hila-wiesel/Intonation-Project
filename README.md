@@ -1,4 +1,4 @@
-# Understanding the meaning of a sentence according to its intonation.
+# Understanding the meaning of a sentence according to its intonation
 
 There are sentences that have several meanings, depending on how the sentence is said, Which word is stressed.
 
@@ -26,10 +26,9 @@ input: speech - on it we would like to carry out the process of understanding it
         And several other recordings of the same speaker.
 Output: Analysis of the sentence meaning of the first audio
 
-#### The process:
+### The process:
 
-
-![image](https://user-images.githubusercontent.com/61710157/181000117-1b5e95f3-b3e3-4597-a1ad-33bcc3296d3c.png)
+![](https://github.com/hila-wiesel/Intonation-Project/blob/main/pictures/procesד.png)
 
 
 
