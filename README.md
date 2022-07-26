@@ -32,7 +32,7 @@ Output: Analysis of the sentence meaning of the first audio
 
 
 
-### intonation process:
+### Intonation process:
 
 ![image](https://github.com/hila-wiesel/Intonation-Project/blob/main/pictures/process-diagram.png)
 
