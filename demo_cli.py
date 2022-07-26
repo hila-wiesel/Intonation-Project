@@ -247,8 +247,8 @@ if __name__ == '__main__':
             # Subtraction between the two spectrograms - with intuition(spec_of_stt) and
             # without intuition(spec_generated_speech)
 
-            subtractSpec = spec_original_speech - spec_generated_speech[0:808][:]
-            print("\nsubtractSpec:\n", subtractSpec)
+            #subtractSpec = spec_original_speech - spec_generated_speech[0:808][:]
+            #print("\nsubtractSpec:\n", subtractSpec)
 
             #############
 
