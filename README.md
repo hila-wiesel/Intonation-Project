@@ -20,7 +20,18 @@ Language processing research is a field that has gained momentum in recent years
 
 Understanding the meaning of the sentence is a milestone in many areas, such as identifying a person in distress by their voice, maintaining the quality of customer service by processing the recordings with them, converting audio to text with punctuation marks, developing a bot system and more.
 
-intonation process:
+### Description of the solution at a glance:
+
+input: speech - on it we would like to carry out the process of understanding its meaning,
+        And several other recordings of the same speaker.
+Output: Analysis of the sentence meaning of the first audio
+
+#### The process:
+
+
+
+### intonation process:
+
 ![Uploading image.png…](https://github.com/hila-wiesel/Intonation-Project/blob/main/pictures/process-diagram.png)
 
 
