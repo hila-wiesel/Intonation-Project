@@ -5,12 +5,12 @@ There are sentences that have several meanings, depending on how the sentence is
 For example:
 The sentence "I did not still the bag from you" can be interpreted in several ways, depending on the word that the speaker emphasizes (underlined):
 
-1. "I did not still the bag from you" - I did not steal the bag, I may have taken or asked.
+1. "I did not  _still the bag from you" - I did not steal the bag, I may have taken or asked.
 The emphasis is on the act of stealing, which the speaker wants to deny.
 
-2. "I did not still the bag from you" - I did not steal the bag, it is possible that I stole something else from you. The emphasis is on the stolen object, the speaker wants to deny that the stolen object is a bag.
+2. "I did not still the _bag from you" - I did not steal the bag, it is possible that I stole something else from you. The emphasis is on the stolen object, the speaker wants to deny that the stolen object is a bag.
 
-3. "I did not still the bag from you" - I did not steal from you. The negation is about who the bag was stolen from. The speaker wants to rule out that the bag was stolen from you (it may have been stolen by me, from someone else).
+3. "I did not still the bag from _you" - I did not steal from you. The negation is about who the bag was stolen from. The speaker wants to rule out that the bag was stolen from you (it may have been stolen by me, from someone else).
 
 Humans distinguish between the change in meaning naturally, but it is difficult to point to a certain legality that determines the difference.
 
@@ -28,21 +28,8 @@ Output: Analysis of the sentence meaning of the first audio
 
 #### The process:
 
-#### 1. Extracting the text from the first audio by the Speech to Text model.
 
-#### 2. Creating synthesized audio for the extracted text, adapted to the speaker's voice by the Text to Speech model.
-This process will be carried out by finding an embedding vector that represents the type of the speaker's voice. This vector does not contain a representation of the intonation of the sentence (since we are talking about several recordings, and different sentences, so the synthesized audio will be without intonation).
-
-#### 3. Creating spectrograms for the original audio and for the synthesized audio.
-
-#### 4. Finding a spectrogram that represents the intonation, by subtracting the spectrograms.
-
-#### 5. Finding the intonation position - which words were stressed.
-
-A change in intonation is expressed by an increase in frequency (tone) or in the strength of the voice (usually a change in both is seen) The places where the subtraction spectrogram values are far from zero are the places where there is intonation.
-
-#### 6. Understanding the meaning according to the found intonation.
-![image](https://user-images.githubusercontent.com/61710157/180999506-9cb4c2ce-e55f-4d53-9d24-c172cb2c3925.png)
+![image](https://user-images.githubusercontent.com/61710157/180999688-9f5590f6-1a2b-4b4f-a4af-6ee182231911.png)
 
 
 
