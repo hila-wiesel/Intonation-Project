@@ -28,7 +28,21 @@ Output: Analysis of the sentence meaning of the first audio
 
 #### The process:
 
-![](https://github.com/hila-wiesel/Intonation-Project/blob/main/pictures/process.png)
+#### 1. Extracting the text from the first audio by the Speech to Text model.
+
+#### 2. Creating synthesized audio for the extracted text, adapted to the speaker's voice by the Text to Speech model.
+This process will be carried out by finding an embedding vector that represents the type of the speaker's voice. This vector does not contain a representation of the intonation of the sentence (since we are talking about several recordings, and different sentences, so the synthesized audio will be without intonation).
+
+#### 3. Creating spectrograms for the original audio and for the synthesized audio.
+
+#### 4. Finding a spectrogram that represents the intonation, by subtracting the spectrograms.
+
+#### 5. Finding the intonation position - which words were stressed.
+
+A change in intonation is expressed by an increase in frequency (tone) or in the strength of the voice (usually a change in both is seen) The places where the subtraction spectrogram values are far from zero are the places where there is intonation.
+
+#### 6. Understanding the meaning according to the found intonation.
+
 
 
 ### intonation process:
