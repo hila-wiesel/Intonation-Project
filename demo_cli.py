@@ -20,7 +20,7 @@ from synthesizer.inference import Synthesizer
 from utils.argutils import print_args
 from utils.default_models import ensure_default_models
 from vocoder import inference as vocoder
-from stt.main import get_large_audio_transcription
+from STT.main import get_large_audio_transcription
 from encoder.audio import wav_to_mel_spectrogram
 
 
