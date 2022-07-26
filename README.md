@@ -28,11 +28,12 @@ Output: Analysis of the sentence meaning of the first audio
 
 #### The process:
 
+![](https://github.com/hila-wiesel/Intonation-Project/blob/main/pictures/process.png)
 
 
 ### intonation process:
 
-![Uploading image.png…](https://github.com/hila-wiesel/Intonation-Project/blob/main/pictures/process-diagram.png)
+![](https://github.com/hila-wiesel/Intonation-Project/blob/main/pictures/process-diagram.png)
 
 
 
