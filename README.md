@@ -28,7 +28,7 @@ Output: Analysis of the sentence meaning of the first audio
 
 ### The process:
 
-![](https://github.com/hila-wiesel/Intonation-Project/blob/main/pictures/procesד.png)
+![](https://github.com/hila-wiesel/Intonation-Project/blob/main/pictures/process.png)
 
 
 
