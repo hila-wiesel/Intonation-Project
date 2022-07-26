@@ -42,6 +42,8 @@ This process will be carried out by finding an embedding vector that represents 
 A change in intonation is expressed by an increase in frequency (tone) or in the strength of the voice (usually a change in both is seen) The places where the subtraction spectrogram values are far from zero are the places where there is intonation.
 
 #### 6. Understanding the meaning according to the found intonation.
+![image](https://user-images.githubusercontent.com/61710157/180999506-9cb4c2ce-e55f-4d53-9d24-c172cb2c3925.png)
+
 
 
 
