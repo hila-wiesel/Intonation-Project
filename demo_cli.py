@@ -3,18 +3,13 @@ import os
 from pathlib import Path
 
 import librosa
-import librosa.display
 import numpy as np
 import soundfile as sf
 import torch
-import matplotlib as plt
-
-import os
-import pylab
+import librosa.display
 
 from encoder import inference as encoder
 from encoder.audio import wav_to_mel_spectrogram
-from encoder.params_data import sampling_rate
 from encoder.params_model import model_embedding_size as speaker_embedding_size
 from synthesizer.inference import Synthesizer
 from utils.argutils import print_args
@@ -22,7 +17,6 @@ from utils.default_models import ensure_default_models
 from vocoder import inference as vocoder
 from STT.main import get_large_audio_transcription
 from encoder.audio import wav_to_mel_spectrogram
-
 
 if __name__ == '__main__':
 
@@ -133,10 +127,10 @@ if __name__ == '__main__':
     num_generated = 0
     while True:
         try:
-            # Get the reference audio filepath -  original speach- for tts
-            path_speech_TTS = "\nReference voice: Enter an audio filepath of a voice to be cloned [TTS] (mp3, " \
+            # Get the reference audio filepath
+            record_to_syn_withoutIntonation = "Reference voice: enter an audio filepath of a voice to be cloned (mp3, " \
                                               "wav, m4a, flac, ...):\n"
-            tts_path = Path(input(path_speech_TTS).replace("\"", "").replace("\'", ""))
+            tts_path = Path(input(record_to_syn_withoutIntonation).replace("\"", "").replace("\'", ""))
 
             ## Computing the embedding
             # First, we load the wav using the function that the speaker encoder provides. This is
@@ -146,9 +140,11 @@ if __name__ == '__main__':
             # - Directly load from the filepath:
             preprocessed_wav = encoder.preprocess_wav(tts_path)
             # - If the wav is already loaded:
-            # original_wav, sampling_rate = librosa.load(str(tts_path))
-            # preprocessed_wav_original = encoder.preprocess_wav(original_wav, sampling_rate)  # waveform
-            print("\nLoaded file succesfully")
+            original_wav, sampling_rate = librosa.load(str(tts_path))
+            # cur_original_spec = wav_to_mel_spectrogram(cur_original_wav) //Adding by hila
+            # print("cur_original_spec", original_wav)
+            preprocessed_wav = encoder.preprocess_wav(original_wav, sampling_rate)
+            print("Loaded file succesfully")
 
             # Then we derive the embedding. There are many functions and parameters that the
             # speaker encoder interfaces. These are mostly for in-depth research. You will typically
@@ -158,32 +154,34 @@ if __name__ == '__main__':
 
             ## Generating the spectrogram
 
-
             #########
-            # Adding by Nofar
+            # Adding by Nofar - Call to STT model
 
-            # STT model - this model gets a record and return two outputs:
+            # stt model- this model gets a record and return two outputs:
             # 1. text that will be input for tts model
-            # 2. spectrogram of the record (original speech - with intonation)
+            # 2. spectrogram of the record (with intonation)
 
             # file path to record
-            path_speech_STT = "\nReference text: Enter an audio filepath of a voice to get text [STT] (mp3, " \
+            record_to_syn_withIntonation = "STT enter an audio filepath (mp3, " \
                                            "wav, m4a, flac, ...):\n"
-            stt_path = Path(input(path_speech_STT).replace("\"", "").replace("\'", ""))
+            stt_path = Path(input(record_to_syn_withIntonation).replace("\"", "").replace("\'", ""))
 
-            # output 1: the text of the record
+            # create waveform
+            preprocessed_wav_stt = encoder.preprocess_wav(stt_path)
+            # - If the wav is already loaded:
+            original_wav_stt, sampling_rate_stt = librosa.load(str(stt_path))
+            preprocessed_wav_stt = encoder.preprocess_wav(original_wav_stt, sampling_rate_stt)
+
+            print("preprocessed_wav_stt", preprocessed_wav_stt)
+            print("preprocessed_wav_stt, shape", preprocessed_wav_stt.shape)
+
+            # create spectrogram - output 2
+            spec_of_stt = wav_to_mel_spectrogram(preprocessed_wav_stt)
+            # print("spec_of_stt", spec_of_stt)
+
+            # the text of the record- output 1
             text = get_large_audio_transcription(stt_path)
-            print("\nText:", text)
-
-            # output 2: create spectrogram
-            preprocessed_wav_original = encoder.preprocess_wav(stt_path) # waveform with intonation
-            spec_original_speech = wav_to_mel_spectrogram(preprocessed_wav_original) # with intonation
-
-            # print("spec_original_speech (with intonation):\n", spec_original_speech)
-            # print("sampling_rate_stt:", sampling_rate_stt)
-            # print("sampling_rate:", sampling_rate)
-
-
+            print("text", text)
             #########
 
             # If seed is specified, reset torch seed and force synthesizer reload
@@ -198,7 +196,7 @@ if __name__ == '__main__':
             # passing return_alignments=True
             specs = synthesizer.synthesize_spectrograms(texts, embeds)
             spec = specs[0]
-            print("\nCreated the mel spectrogram")
+            print("Created the mel spectrogram")
 
             ## Generating the waveform
             print("Synthesizing the waveform:")
@@ -210,45 +208,39 @@ if __name__ == '__main__':
 
             # Synthesizing the waveform is fairly straightforward. Remember that the longer the
             # spectrogram, the more time-efficient the vocoder.
-            generated_wav = vocoder.infer_waveform(spec) # waveform without intonation
-            preprocessed_wav_generated = encoder.preprocess_wav(generated_wav) # waveform without intonation ------- new !!
-            spec_generated_speech = wav_to_mel_spectrogram(preprocessed_wav_generated)
-
-            # print("\spec_generated_speech (without intonation):\n", spec_generated_speech)
-            print("\nspec_original_speech:", spec_original_speech.shape)
-            print("spec_generated_speech:", spec_generated_speech.shape)
-
-            ###### plot spectrogram #####
-
-            # plt.use('Agg')  # No pictures displayed
-            # save_path = 'spec_original_speech.jpg'
-            # pylab.axis('off')  # no axis
-            # pylab.axes([0., 0., 1., 1.], frameon=False, xticks=[], yticks=[])  # Remove the white edge
-            # S = librosa.feature.melspectrogram(y=path_speech_STT, sr=sampling_rate)
-            # librosa.display.specshow(librosa.power_to_db(S, ref=np.max))
-            # pylab.savefig(save_path, bbox_inches=None, pad_inches=0)
-            # pylab.close()
-
-            # plt.use('Agg')  # No pictures displayed
-            # save_path = 'spec_generated_speech.jpg'
-            # pylab.axis('off')  # no axis
-            # pylab.axes([0., 0., 1., 1.], frameon=False, xticks=[], yticks=[])  # Remove the white edge
-            # # plt.pyplot.specgram(spec_generated_speech)
-            # # S = librosa.feature.melspectrogram(y=???, sr=sampling_rate)
-            # # librosa.display.specshow(librosa.power_to_db(S, ref=np.max))
-            # pylab.savefig(save_path, bbox_inches=None, pad_inches=0)
-            # pylab.close()
-
-            ###### end (plot spectrogram) #####
+            generated_wav = vocoder.infer_waveform(spec)
+            print("generated_wav", generated_wav)
+            print("generated_wav-shape", generated_wav.shape)
+            generated_spec = wav_to_mel_spectrogram(generated_wav)
+            # print("\ngenerated_spec", generated_spec)
 
             #############
-            # Adding by nofar
+            # Adding by Nofar- plot the waves of the audio with intonation and without intonation(in the time line)
+
+            import matplotlib.pyplot as plt
+
+            fig, ax = plt.subplots(nrows=2, ncols=1, sharex=True)
+
+            fig.tight_layout()
+            librosa.display.waveplot(preprocessed_wav_stt, sampling_rate_stt, ax=ax[0])
+            ax[0].title.set_text('with intonation')
+            librosa.display.waveplot(generated_wav, synthesizer.sample_rate, ax=ax[1])
+            ax[1].title.set_text('without intonation')
+            plt.plot(range(0,len(preprocessed_wav_stt)), preprocessed_wav_stt)
+
+            plt.show()
+
+            ##############
+
+            #############
+            # Adding by Nofar - try to Subtract between the two spectograms- with intonation and without intonation
 
             # Subtraction between the two spectrograms - with intuition(spec_of_stt) and
-            # without intuition(spec_generated_speech)
+            # without intuition(generated_spec)
 
-            #subtractSpec = spec_original_speech - spec_generated_speech[0:808][:]
-            #print("\nsubtractSpec:\n", subtractSpec)
+            # subtractSpec = spec_of_stt - generated_spec
+
+            # print("subtractSpec", subtractSpec)
 
             #############
 
@@ -260,26 +252,39 @@ if __name__ == '__main__':
             # Trim excess silences to compensate for gaps in spectrograms (issue #53)
             generated_wav = encoder.preprocess_wav(generated_wav)
 
-            # Play the audio (non-blocking)
-            if not args.no_sound:
-                import sounddevice as sd
 
-                try:
-                    sd.stop()
-                    sd.play(generated_wav, synthesizer.sample_rate)
-                except sd.PortAudioError as e:
-                    print("\nCaught exception: %s" % repr(e))
-                    print("Continuing without audio playback. Suppress this message with the \"--no_sound\" flag.\n")
-                except:
-                    raise
+            # Play the generated audio (non-blocking)
+            # if not args.no_sound:
+            #     import sounddevice as sd
+            #
+            #     try:
+            #         sd.stop()
+            #         sd.play(generated_wav, synthesizer.sample_rate)
+            #     except sd.PortAudioError as e:
+            #         print("\nCaught exception: %s" % repr(e))
+            #         print("Continuing without audio playback. Suppress this message with the \"--no_sound\" flag.\n")
+            #     except:
+            #         raise
 
             # Save it on the disk
             filename = "demo_output_%02d.wav" % num_generated
-            print("generated_wav.dtype:", generated_wav.dtype)
+            print(generated_wav.dtype)
             sf.write(filename, generated_wav.astype(np.float32), synthesizer.sample_rate)
             num_generated += 1
             print("\nSaved output as %s\n\n" % filename)
 
+            ###########
+            # try to Retrieving the first word from the waveforms
+
+            first_word_generated = generated_wav[1000:3500]
+            filename = "first_word_generated.wav"
+            sf.write(filename, first_word_generated .astype(np.float32), synthesizer.sample_rate)
+            print("first_word_generated type", type(first_word_generated))
+
+            first_word_original = preprocessed_wav_stt[1000:3000]
+            filename = "first_word_original.wav"
+            print("first_word_original type", type(first_word_original))
+            sf.write(filename, first_word_original(np.float32),synthesizer.sample_rate)
 
         except Exception as e:
             print("Caught exception: %s" % repr(e))
