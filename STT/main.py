@@ -1,9 +1,11 @@
 # importing libraries
 import speech_recognition as sr
 import os
+from scipy.io.wavfile import read
+import numpy
 from pydub import AudioSegment
 from pydub.silence import split_on_silence
-
+from encoder.audio import wav_to_mel_spectrogram
 # create a speech recognition object
 r = sr.Recognizer()
 
@@ -51,3 +53,9 @@ def get_large_audio_transcription(path):
     # return the text for all chunks detected
     return whole_text
 
+if __name__ == '__main__':
+
+    # a = read("preamble10.wav")
+    # numpy.ndarray(a[1],dtype=float)
+    # print(wav_to_mel_spectrogram(a))
+    print('preamble10.wav')

@@ -17,7 +17,6 @@ from encoder.inference import plot_embedding_as_heatmap
 from toolbox.utterance import Utterance
 
 from stt.main import get_large_audio_transcription
-
 filterwarnings("ignore")
 
 
@@ -51,10 +50,8 @@ colormap = np.array([
 #     "utterances are of the same color as the speaker whose voice was used, but they're " \
 #     "represented with a cross."
 
-path = 'STT\\mainAudio.wav'
+path = 'STT\\preamble10.wav'
 default_text = get_large_audio_transcription(path)
-
-
 
 class UI(QDialog):
     min_umap_points = 4
@@ -611,4 +608,3 @@ class UI(QDialog):
 
     def start(self):
         self.app.exec_()
-
