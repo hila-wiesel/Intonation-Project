@@ -16,7 +16,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from encoder.inference import plot_embedding_as_heatmap
 from toolbox.utterance import Utterance
 
-from stt.main import get_large_audio_transcription
+from STT.main import get_large_audio_transcription
 filterwarnings("ignore")
 
 
