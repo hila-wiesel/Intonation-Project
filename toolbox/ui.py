@@ -51,7 +51,7 @@ colormap = np.array([
 #     "utterances are of the same color as the speaker whose voice was used, but they're " \
 #     "represented with a cross."
 
-path = 'stt\\mainAudio.wav'
+path = 'STT\\mainAudio.wav'
 default_text = get_large_audio_transcription(path)
 
 
