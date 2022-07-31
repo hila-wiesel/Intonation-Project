@@ -6,6 +6,8 @@ from tkinter import ttk, filedialog
 from tkinter.filedialog import askopenfile
 import tkinter.messagebox 
 import os
+import tkinter as tk
+from tkinter import ttk
 from tkinter.filedialog import askdirectory
 def Voice_rec():
     fs = 48000
@@ -51,25 +53,30 @@ root = Tk()
 root.attributes('-fullscreen', True)
 root.title("Intonation-Project")
 
+root.columnconfigure(0, weight=1)
+root.columnconfigure(1, weight=3)
+
 mainframe = Frame(root)
 mainframe.grid(column=100, row=100, sticky=(N, W, E, S))
-root.columnconfigure(0, weight=1)
-root.rowconfigure(0, weight=1)
+root.columnconfigure(0, weight=7)
+root.rowconfigure(0, weight=7)
 
 
 # define font
 myFont = font.Font(family='Helvetica',size=30)
 
 # creating text label to display on window screen
-Label(root, text=" Voice Recoder : ",width=30,height=4).grid(column=1, row=1, sticky=(W, E), rowspan=2)
+Label(root, text=" input STT model : ",width=30,height=1).grid(sticky= tk.NW ,row=0,column=0,padx=5, pady=5)
 
-Label(root, text="Click the Button to browse a .wav audio",width=30,height=4).grid(column=1, row=10, sticky=(W, E), rowspan=2)
+Label(root, text=" Voice Recoder : ",width=30,height=2).grid(sticky= tk.N,row=1,column=0, padx=5, pady=5)
 
-Button(root, text="Start", command=Voice_rec,width=10,height=2).grid(column=5, row=1, columnspan=2, rowspan=2,padx=5, pady=5)
+Label(root, text="Click the Button to browse a .wav audio",width=30,height=2).grid(sticky= tk.N, row=2,column=0, padx=5, pady=5)
 
-Button(root, text="Browse", command=open_file,width=10,height=2).grid(column=5, row=10, columnspan=2, rowspan=2, padx=5, pady=5)
+Button(root, text="Start", command=Voice_rec,width=10,height=2).grid(sticky= tk.NS,row=1 ,column=1)
 
-Button(root, text='Close', command=root.destroy).grid(column=100, row=100, columnspan=2, rowspan=2, padx=5, pady=5)
+Button(root, text="Browse", command=open_file,width=10,height=2).grid(sticky= tk.NS,row=2, column=1)
+
+Button(root, text='Close', command=root.destroy).grid(sticky= tk.SE,row=7, column=7)
 
 
 #Button(root, text='Close', command=callfun).grid(column=100, row=100, columnspan=2, rowspan=2, padx=5, pady=5)
