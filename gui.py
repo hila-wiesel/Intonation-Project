@@ -58,25 +58,41 @@ root.columnconfigure(1, weight=3)
 
 mainframe = Frame(root)
 mainframe.grid(column=100, row=100, sticky=(N, W, E, S))
-root.columnconfigure(0, weight=7)
-root.rowconfigure(0, weight=7)
+root.columnconfigure(0, weight=4)
+root.rowconfigure(0, weight=11)
 
 
 # define font
 myFont = font.Font(family='Helvetica',size=30)
 
 # creating text label to display on window screen
-Label(root, text=" input STT model : ",width=30,height=1).grid(sticky= tk.NW ,row=0,column=0,padx=5, pady=5)
+Label(root, text=" Intonation-Project",width=40,height=1).grid(sticky= tk.N ,row=0,column=0,padx=5, pady=5)
 
-Label(root, text=" Voice Recoder : ",width=30,height=2).grid(sticky= tk.N,row=1,column=0, padx=5, pady=5)
 
-Label(root, text="Click the Button to browse a .wav audio",width=30,height=2).grid(sticky= tk.N, row=2,column=0, padx=5, pady=5)
+#stt model-----------------------------------------------------------
+Label(root, text=" input STT model :  choose the option to add Audio",width=40,height=1).grid(sticky= tk.NW ,row=1,column=0)
 
-Button(root, text="Start", command=Voice_rec,width=10,height=2).grid(sticky= tk.NS,row=1 ,column=1)
+Label(root, text=" Voice Recoder : ",width=30,height=2).grid(sticky= tk.N,row=2,column=0)
 
-Button(root, text="Browse", command=open_file,width=10,height=2).grid(sticky= tk.NS,row=2, column=1)
+Label(root, text="Click the Button to browse a .wav audio",width=30,height=2).grid(sticky= tk.N, row=3,column=0)
 
-Button(root, text='Close', command=root.destroy).grid(sticky= tk.SE,row=7, column=7)
+Button(root, text="Start", command=Voice_rec,width=10,height=2).grid(sticky= tk.NS,row=2 ,column=1)
+
+Button(root, text="Browse", command=open_file,width=10,height=2).grid(sticky= tk.NS,row=3, column=1)
+
+
+#tts model-----------------------------------------------------------
+Label(root, text=" input TTS model :  choose the option to add Audio ",width=40,height=1).grid(sticky= tk.NW ,row=8,column=0)
+
+Label(root, text=" Voice Recoder : ",width=30,height=2).grid(sticky= tk.N,row=9,column=0)
+
+Label(root, text="Click the Button to browse a .wav audio",width=30,height=2).grid(sticky= tk.N, row=10,column=0)
+
+Button(root, text="Start", command=Voice_rec,width=10,height=2).grid(sticky= tk.NS,row=9 ,column=1)
+
+Button(root, text="Browse", command=open_file,width=10,height=2).grid(sticky= tk.NS,row=10, column=1)
+
+Button(root, text='Close', command=root.destroy).grid(sticky= tk.SE,row=11, column=4)
 
 
 #Button(root, text='Close', command=callfun).grid(column=100, row=100, columnspan=2, rowspan=2, padx=5, pady=5)
