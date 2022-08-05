@@ -235,13 +235,13 @@ class UI(QDialog):
 
         return wav.squeeze()
 
-    @property
-    def current_dataset_name(self):
-        return self.dataset_box.currentText()
+    #@property
+    #def current_dataset_name(self):
+        #return self.dataset_box.currentText()
 
-    @property
-    def current_speaker_name(self):
-        return self.speaker_box.currentText()
+    #@property
+    #def current_speaker_name(self):
+        #return self.speaker_box.currentText()
 
     @property
     def current_utterance_name(self):
@@ -278,33 +278,33 @@ class UI(QDialog):
             if datasets_root is not None:
                 datasets = [datasets_root.joinpath(d) for d in recognized_datasets]
                 datasets = [d.relative_to(datasets_root) for d in datasets if d.exists()]
-                self.browser_load_button.setDisabled(len(datasets) == 0)
+                #self.browser_load_button.setDisabled(len(datasets) == 0)
             if datasets_root is None or len(datasets) == 0:
                 msg = "Warning: you d" + ("id not pass a root directory for datasets as argument" \
-                    if datasets_root is None else "o not have any of the recognized datasets" \
-                                                  " in %s" % datasets_root)
+                                              if datasets_root is None else "o not have any of the recognized datasets" \
+                                                                            " in %s" % datasets_root)
                 self.log(msg)
                 msg += ".\nThe recognized datasets are:\n\t%s\nFeel free to add your own. You " \
                        "can still use the toolbox by recording samples yourself." % \
                        ("\n\t".join(recognized_datasets))
                 print(msg, file=sys.stderr)
 
-                self.random_utterance_button.setDisabled(True)
-                self.random_speaker_button.setDisabled(True)
-                self.random_dataset_button.setDisabled(True)
-                self.utterance_box.setDisabled(True)
-                self.speaker_box.setDisabled(True)
-                self.dataset_box.setDisabled(True)
-                self.browser_load_button.setDisabled(True)
-                self.auto_next_checkbox.setDisabled(True)
+                #self.random_utterance_button.setDisabled(True)
+                #self.random_speaker_button.setDisabled(True)
+                #self.random_dataset_button.setDisabled(True)
+                #self.utterance_box.setDisabled(True)
+                #self.speaker_box.setDisabled(True)
+                #self.dataset_box.setDisabled(True)
+                #self.browser_load_button.setDisabled(True)
+                #self.auto_next_checkbox.setDisabled(True)
                 return
-            self.repopulate_box(self.dataset_box, datasets, random)
+            #self.repopulate_box(self.dataset_box, datasets, random)
 
         # Select a random speaker
-        if level <= 1:
-            speakers_root = datasets_root.joinpath(self.current_dataset_name)
-            speaker_names = [d.stem for d in speakers_root.glob("*") if d.is_dir()]
-            self.repopulate_box(self.speaker_box, speaker_names, random)
+        #if level <= 1:
+            #speakers_root = datasets_root.joinpath(self.current_dataset_name)
+            #speaker_names = [d.stem for d in speakers_root.glob("*") if d.is_dir()]
+            #self.repopulate_box(self.speaker_box, speaker_names, random)
 
         # Select a random utterance
         if level <= 2:
@@ -316,11 +316,11 @@ class UI(QDialog):
             for extension in ['mp3', 'flac', 'wav', 'm4a']:
                 utterances.extend(Path(utterances_root).glob("**/*.%s" % extension))
             utterances = [fpath.relative_to(utterances_root) for fpath in utterances]
-            self.repopulate_box(self.utterance_box, utterances, random)
+            #self.repopulate_box(self.utterance_box, utterances, random)
 
-    def browser_select_next(self):
-        index = (self.utterance_box.currentIndex() + 1) % len(self.utterance_box)
-        self.utterance_box.setCurrentIndex(index)
+    #def browser_select_next(self):
+        #index = (self.utterance_box.currentIndex() + 1) % len(self.utterance_box)
+        #self.utterance_box.setCurrentIndex(index)
 
     @property
     def current_encoder_fpath(self):
@@ -427,6 +427,7 @@ class UI(QDialog):
         self.export_wav_button.setDisabled(True)
         [self.log("") for _ in range(self.max_log_lines)]
 
+
     def __init__(self):
         ## Initialize the application
         self.app = QApplication(sys.argv)
@@ -469,36 +470,45 @@ class UI(QDialog):
         ## Browser
         # Dataset, speaker and utterance selection
         i = 0
-        self.dataset_box = QComboBox()
-        browser_layout.addWidget(QLabel("<b>Dataset</b>"), i, 0)
-        browser_layout.addWidget(self.dataset_box, i + 1, 0)
-        self.speaker_box = QComboBox()
-        browser_layout.addWidget(QLabel("<b>Speaker</b>"), i, 1)
-        browser_layout.addWidget(self.speaker_box, i + 1, 1)
-        self.utterance_box = QComboBox()
-        browser_layout.addWidget(QLabel("<b>Utterance</b>"), i, 2)
-        browser_layout.addWidget(self.utterance_box, i + 1, 2)
-        self.browser_load_button = QPushButton("Load")
-        browser_layout.addWidget(self.browser_load_button, i + 1, 3)
+        #self.dataset_box = QComboBox()
+        #browser_layout.addWidget(QLabel("<b>Dataset</b>"), i, 0)
+        #browser_layout.addWidget(self.dataset_box, i + 1, 0)
+        #self.speaker_box = QComboBox()
+        #browser_layout.addWidget(QLabel("<b>Speaker</b>"), i, 1)
+        #browser_layout.addWidget(self.speaker_box, i + 1, 1)
+        #self.utterance_box = QComboBox()
+        #browser_layout.addWidget(QLabel("<b>Utterance</b>"), i, 2)
+        #browser_layout.addWidget(self.utterance_box, i + 1, 2)
+        #self.browser_load_button = QPushButton("Load")
+        #browser_layout.addWidget(self.browser_load_button, i + 1, 3)
 
-        i += 2
+        #i += 2
 
         # Random buttons
-        self.random_dataset_button = QPushButton("Random")
-        browser_layout.addWidget(self.random_dataset_button, i, 0)
-        self.random_speaker_button = QPushButton("Random")
-        browser_layout.addWidget(self.random_speaker_button, i, 1)
-        self.random_utterance_button = QPushButton("Random")
-        browser_layout.addWidget(self.random_utterance_button, i, 2)
-        self.auto_next_checkbox = QCheckBox("Auto select next")
-        self.auto_next_checkbox.setChecked(True)
-        browser_layout.addWidget(self.auto_next_checkbox, i, 3)
+        #self.random_dataset_button = QPushButton("Random")
+        #browser_layout.addWidget(self.random_dataset_button, i, 0)
+        #self.random_speaker_button = QPushButton("Random")
+        #browser_layout.addWidget(self.random_speaker_button, i, 1)
+        #self.random_utterance_button = QPushButton("Random")
+        #browser_layout.addWidget(self.random_utterance_button, i, 2)
+        #self.auto_next_checkbox = QCheckBox("Auto select next")
+        #self.auto_next_checkbox.setChecked(True)
+        #browser_layout.addWidget(self.auto_next_checkbox, i, 3)
         i += 1
 
         # Utterance box
-        browser_layout.addWidget(QLabel("<b>Add New User</b>"), i, 0)
-        i += 1
 
+        browser_layout.addWidget(QLabel("<b>Add New User</b>"), i, 0)
+        self.utterance_historyText = QLineEdit("Name For Save:", self)
+        browser_layout.addWidget(self.utterance_historyText, i,1)
+        self.button = QPushButton('Add', self)
+        browser_layout.addWidget(self.button, i,2)
+        self.button.move(20, 80)
+        self.button.clicked.connect(self.on_click1)
+        self.show()
+
+
+        i += 1
         browser_layout.addWidget(QLabel("<b>Hello, in order for us to recognize your voice\n, please record the following sentence:</b>"), i, 0)
         i += 1
         browser_layout.addWidget(QLabel("<b>We the people of the united states in order to form a more perfect union</b>"), i, 0)
@@ -513,8 +523,6 @@ class UI(QDialog):
         browser_layout.addWidget(self.play_button, i, 2)
         self.stop_button = QPushButton("Stop")
         browser_layout.addWidget(self.stop_button, i, 3)
-        self.utterance_history = QLineEdit('Name For Save:', self)
-        browser_layout.addWidget(self.utterance_history, i,4)
         i += 1
 
 
@@ -596,7 +604,7 @@ class UI(QDialog):
         layout_seed.addWidget(self.seed_textbox, 0, 1)
         self.trim_silences_checkbox = QCheckBox("Enhance vocoder output")
         self.trim_silences_checkbox.setToolTip("When checked, trims excess silence in vocoder output."
-            " This feature requires `webrtcvad` to be installed.")
+                                               " This feature requires `webrtcvad` to be installed.")
         layout_seed.addWidget(self.trim_silences_checkbox, 0, 2, 1, 2)
         gen_layout.addLayout(layout_seed)
 
@@ -617,6 +625,9 @@ class UI(QDialog):
         ## Finalize the display
         self.reset_interface()
         self.show()
+
+    def on_click1(self):
+        self.textboxValue = self.utterance_historyText.text()
 
     def start(self):
         self.app.exec_()
