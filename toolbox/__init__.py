@@ -47,7 +47,6 @@ class Toolbox:
         self.datasets_root = datasets_root
         self.utterances = set()
         self.current_generated = (None, None, None, None) # speaker_name, spec, breaks, wav
-
         self.synthesizer = None # type: Synthesizer
         self.current_wav = None
         self.waves_list = []
@@ -73,15 +72,15 @@ class Toolbox:
 
     def setup_events(self):
         # Dataset, speaker and utterance selection
-        self.ui.browser_load_button.clicked.connect(lambda: self.load_from_browser())
+        #self.ui.browser_load_button.clicked.connect(lambda: self.load_from_browser())
         random_func = lambda level: lambda: self.ui.populate_browser(self.datasets_root,
                                                                      recognized_datasets,
                                                                      level)
-        self.ui.random_dataset_button.clicked.connect(random_func(0))
-        self.ui.random_speaker_button.clicked.connect(random_func(1))
-        self.ui.random_utterance_button.clicked.connect(random_func(2))
-        self.ui.dataset_box.currentIndexChanged.connect(random_func(1))
-        self.ui.speaker_box.currentIndexChanged.connect(random_func(2))
+        #self.ui.random_dataset_button.clicked.connect(random_func(0))
+        #self.ui.random_speaker_button.clicked.connect(random_func(1))
+        #self.ui.random_utterance_button.clicked.connect(random_func(2))
+        #self.ui.dataset_box.currentIndexChanged.connect(random_func(1))
+        #self.ui.speaker_box.currentIndexChanged.connect(random_func(2))
 
         # Model selection
         self.ui.encoder_box.currentIndexChanged.connect(self.init_encoder)
@@ -144,8 +143,8 @@ class Toolbox:
             speaker_name = self.ui.current_dataset_name + '_' + self.ui.current_speaker_name
 
             # Select the next utterance
-            if self.ui.auto_next_checkbox.isChecked():
-                self.ui.browser_select_next()
+            #if self.ui.auto_next_checkbox.isChecked():
+            #    self.ui.browser_select_next()
         elif fpath == "":
             return
         else:
@@ -166,7 +165,7 @@ class Toolbox:
         self.ui.play(wav, encoder.sampling_rate)
 
         speaker_name = "user01"
-        name = speaker_name + "_rec_%05d" % np.random.randint(100000)
+        name = self.ui.textboxValue
         self.add_real_utterance(wav, name, speaker_name)
 
     def add_real_utterance(self, wav, name, speaker_name):
@@ -277,8 +276,8 @@ class Toolbox:
         #Update waves combobox
         self.waves_count += 1
         if self.waves_count > MAX_WAVS:
-          self.waves_list.pop()
-          self.waves_namelist.pop()
+            self.waves_list.pop()
+            self.waves_namelist.pop()
         self.waves_list.insert(0, wav)
         self.waves_namelist.insert(0, wav_name)
 
@@ -344,4 +343,4 @@ class Toolbox:
         self.ui.set_loading(0)
 
     def update_seed_textbox(self):
-       self.ui.update_seed_textbox()
+        self.ui.update_seed_textbox()
