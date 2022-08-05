@@ -92,7 +92,7 @@ class Toolbox:
 
         # Utterance selection
         func = lambda: self.load_from_browser(self.ui.browse_file())
-        self.ui.browser_browse_button.clicked.connect(func)
+        #self.ui.browser_browse_button.clicked.connect(func)
         func = lambda: self.ui.draw_utterance(self.ui.selected_utterance, "current")
         self.ui.utterance_history.currentIndexChanged.connect(func)
         func = lambda: self.ui.play(self.ui.selected_utterance.wav, Synthesizer.sample_rate)
