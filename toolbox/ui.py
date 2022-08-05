@@ -352,6 +352,9 @@ class UI(QDialog):
         vocoder_items = [(f.parent.name, f) for f in vocoder_fpaths] + [("Griffin-Lim", None)]
         self.repopulate_box(self.vocoder_box, vocoder_items)
 
+        #choose_fpaths = []
+        #choose_items = [(f.parent.name, f) for f in choose_fpaths] + [("Tramp", None)]
+        #self.repopulate_box(self.choose_box, choose_items)
     @property
     def selected_utterance(self):
         return self.utterance_history.itemData(self.utterance_history.currentIndex())
@@ -477,6 +480,7 @@ class UI(QDialog):
         browser_layout.addWidget(self.utterance_box, i + 1, 2)
         self.browser_load_button = QPushButton("Load")
         browser_layout.addWidget(self.browser_load_button, i + 1, 3)
+
         i += 2
 
         # Random buttons
@@ -492,37 +496,45 @@ class UI(QDialog):
         i += 1
 
         # Utterance box
-        browser_layout.addWidget(QLabel("<b>Use embedding from:</b>"), i, 0)
-        self.utterance_history = QComboBox()
-        browser_layout.addWidget(self.utterance_history, i, 1, 1, 3)
+        browser_layout.addWidget(QLabel("<b>Add New User</b>"), i, 0)
         i += 1
 
+        browser_layout.addWidget(QLabel("<b>Hello, in order for us to recognize your voice\n, please record the following sentence:</b>"), i, 0)
+        i += 1
+        browser_layout.addWidget(QLabel("<b>We the people of the united states in order to form a more perfect union</b>"), i, 0)
+
+
         # Random & next utterance buttons
-        self.browser_browse_button = QPushButton("Browse")
-        browser_layout.addWidget(self.browser_browse_button, i, 0)
+        #self.browser_browse_button = QPushButton("Browse")
+        #browser_layout.addWidget(self.browser_browse_button, i, 2)
         self.record_button = QPushButton("Record")
         browser_layout.addWidget(self.record_button, i, 1)
         self.play_button = QPushButton("Play")
         browser_layout.addWidget(self.play_button, i, 2)
         self.stop_button = QPushButton("Stop")
         browser_layout.addWidget(self.stop_button, i, 3)
+        self.utterance_history = QLineEdit('Name For Save:', self)
+        browser_layout.addWidget(self.utterance_history, i,4)
         i += 1
 
 
         # Model and audio output selection
+        self.utterance_history = QComboBox()
+        browser_layout.addWidget(QLabel("<b>Voice selection</b>"), i, 0)
+        browser_layout.addWidget(self.utterance_history, i + 1, 0)
         self.encoder_box = QComboBox()
-        browser_layout.addWidget(QLabel("<b>Encoder</b>"), i, 0)
-        browser_layout.addWidget(self.encoder_box, i + 1, 0)
+        browser_layout.addWidget(QLabel("<b>Encoder</b>"), i, 1)
+        browser_layout.addWidget(self.encoder_box, i + 1, 1)
         self.synthesizer_box = QComboBox()
-        browser_layout.addWidget(QLabel("<b>Synthesizer</b>"), i, 1)
-        browser_layout.addWidget(self.synthesizer_box, i + 1, 1)
+        browser_layout.addWidget(QLabel("<b>Synthesizer</b>"), i, 2)
+        browser_layout.addWidget(self.synthesizer_box, i + 1, 2)
         self.vocoder_box = QComboBox()
-        browser_layout.addWidget(QLabel("<b>Vocoder</b>"), i, 2)
-        browser_layout.addWidget(self.vocoder_box, i + 1, 2)
+        browser_layout.addWidget(QLabel("<b>Vocoder</b>"), i, 3)
+        browser_layout.addWidget(self.vocoder_box, i + 1, 3)
 
         self.audio_out_devices_cb=QComboBox()
-        browser_layout.addWidget(QLabel("<b>Audio Output</b>"), i, 3)
-        browser_layout.addWidget(self.audio_out_devices_cb, i + 1, 3)
+        browser_layout.addWidget(QLabel("<b>Audio Output</b>"), i, 4)
+        browser_layout.addWidget(self.audio_out_devices_cb, i + 1, 4)
         i += 2
 
         #Replay & Save Audio
