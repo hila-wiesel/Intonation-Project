@@ -2,9 +2,11 @@ import sys
 import traceback
 from pathlib import Path
 from time import perf_counter as timer
-
+import speech_recognition as sr
 import numpy as np
 import torch
+from STT.main import get_large_audio_transcription
+from PyQt5.QtWidgets import QLineEdit
 
 from encoder import inference as encoder
 from synthesizer.inference import Synthesizer
@@ -90,14 +92,17 @@ class Toolbox:
         self.ui.vocoder_box.currentIndexChanged.connect(self.init_vocoder)
 
         # Utterance selection
-        func = lambda: self.load_from_browser(self.ui.browse_file())
-        self.ui.browser_browse_button.clicked.connect(func)
+        #func = lambda: self.load_from_browser(self.ui.browse_file())
+        #self.ui.browser_browse_button.clicked.connect(func)
+        func = lambda: self.load_from_browser1(self.ui.browse_file1())
+        self.ui.browser_browse_button1.clicked.connect(func)
         func = lambda: self.ui.draw_utterance(self.ui.selected_utterance, "current")
         self.ui.utterance_history.currentIndexChanged.connect(func)
         func = lambda: self.ui.play(self.ui.selected_utterance.wav, Synthesizer.sample_rate)
-        self.ui.play_button.clicked.connect(func)
+        #self.ui.play_button.clicked.connect(func)
         self.ui.stop_button.clicked.connect(self.ui.stop)
         self.ui.record_button.clicked.connect(self.record)
+        #self.ui.record_buttonIn.clicked.connect(self.ui.recordIn)
 
         #Audio
         self.ui.setup_audio_devices(Synthesizer.sample_rate)
@@ -158,6 +163,27 @@ class Toolbox:
 
         self.add_real_utterance(wav, name, speaker_name)
 
+
+    def load_from_browser1(self, fpath=None):
+        if fpath is None:
+            fpath = Path(self.datasets_root,
+                         self.ui.current_dataset_name,
+                         self.ui.current_speaker_name,
+                         self.ui.current_utterance_name)
+            name = str(fpath.relative_to(self.datasets_root))
+            speaker_name = self.ui.current_dataset_name + '_' + self.ui.current_speaker_name
+
+            # Select the next utterance
+            #if self.ui.auto_next_checkbox.isChecked():
+            #    self.ui.browser_select_next()
+        elif fpath == "":
+            return
+        else:
+            #print("fpath[0]     ",fpath)
+            text=get_large_audio_transcription(fpath)
+            print(text)
+            self.ui.utterance_sentenceText.setText(text)
+
     def record(self):
         wav = self.ui.record_one(encoder.sampling_rate, 5)
         if wav is None:
@@ -167,6 +193,26 @@ class Toolbox:
         speaker_name = "user01"
         name = self.ui.textboxValue
         self.add_real_utterance(wav, name, speaker_name)
+
+    # def recordIn(self):
+    #     wav = self.ui.record_one(encoder.sampling_rate, 5)
+    #     if wav is None:
+    #         return
+    #
+    #     r = sr.Recognizer()
+    #     with sr.AudioFile(wav) as source:
+    #         # listen for the data (load audio to memory)
+    #         audio_data = r.record(source)
+    #         # recognize (convert from speech to text)
+    #         text = r.recognize_google(audio_data)
+    # print(text)
+
+
+    # self.ui.play(wav, encoder.sampling_rate)
+    # speaker_name = "user01"
+    # name = self.ui.textboxValue
+    # self.add_real_utterance(wav, name, speaker_name)
+
 
     def add_real_utterance(self, wav, name, speaker_name):
         # Compute the mel spectrogram
