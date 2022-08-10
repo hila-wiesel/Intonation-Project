@@ -116,7 +116,7 @@ class Toolbox:
 
         # Generation
         func = lambda: self.synthesize() or self.vocode()
-        #self.ui.generate_button.clicked.connect(func)
+        self.ui.generate_button.clicked.connect(func)
         self.ui.synthesize_button.clicked.connect(self.synthesize)
         self.ui.vocode_button.clicked.connect(self.vocode)
         self.ui.random_seed_checkbox.clicked.connect(self.update_seed_textbox)
