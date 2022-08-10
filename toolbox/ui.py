@@ -1,4 +1,5 @@
 import sys
+import utils
 from pathlib import Path
 from time import sleep
 from typing import List, Set
@@ -18,6 +19,10 @@ from toolbox.utterance import Utterance
 
 from STT.main import get_large_audio_transcription
 filterwarnings("ignore")
+
+from playsound import playsound
+from pydub import AudioSegment
+from pydub.playback import play
 
 
 colormap = np.array([
@@ -50,7 +55,7 @@ colormap = np.array([
 #     "utterances are of the same color as the speaker whose voice was used, but they're " \
 #     "represented with a cross."
 
-path = 'STT\\preamble10.wav'
+path = 'STT/preamble10.wav'
 default_text = get_large_audio_transcription(path)
 
 class UI(QDialog):
@@ -278,7 +283,7 @@ class UI(QDialog):
             if datasets_root is not None:
                 datasets = [datasets_root.joinpath(d) for d in recognized_datasets]
                 datasets = [d.relative_to(datasets_root) for d in datasets if d.exists()]
-                #self.browser_load_button.setDisabled(len(datasets) == 0)
+                self.browser_load_button.setDisabled(len(datasets) == 0)
             if datasets_root is None or len(datasets) == 0:
                 msg = "Warning: you d" + ("id not pass a root directory for datasets as argument" \
                                               if datasets_root is None else "o not have any of the recognized datasets" \
@@ -295,7 +300,7 @@ class UI(QDialog):
                 #self.utterance_box.setDisabled(True)
                 #self.speaker_box.setDisabled(True)
                 #self.dataset_box.setDisabled(True)
-                #self.browser_load_button.setDisabled(True)
+                self.browser_load_button.setDisabled(True)
                 #self.auto_next_checkbox.setDisabled(True)
                 return
             #self.repopulate_box(self.dataset_box, datasets, random)
@@ -369,6 +374,7 @@ class UI(QDialog):
             self.utterance_history.removeItem(self.max_saved_utterances)
 
         self.play_button.setDisabled(False)
+        #self.start_stt.setDisabled(False)
         self.generate_button.setDisabled(False)
         self.synthesize_button.setDisabled(False)
 
@@ -420,6 +426,7 @@ class UI(QDialog):
         self.draw_umap_projections(set())
         self.set_loading(0)
         self.play_button.setDisabled(True)
+        #self.start_stt.setDisabled(True)
         self.generate_button.setDisabled(True)
         self.synthesize_button.setDisabled(True)
         self.vocode_button.setDisabled(True)
@@ -479,8 +486,8 @@ class UI(QDialog):
         #self.utterance_box = QComboBox()
         #browser_layout.addWidget(QLabel("<b>Utterance</b>"), i, 2)
         #browser_layout.addWidget(self.utterance_box, i + 1, 2)
-        #self.browser_load_button = QPushButton("Load")
-        #browser_layout.addWidget(self.browser_load_button, i + 1, 3)
+        self.browser_load_button = QPushButton("Load")
+        browser_layout.addWidget(self.browser_load_button, i + 1, 3)
 
         #i += 2
 
@@ -515,14 +522,14 @@ class UI(QDialog):
 
 
         # Random & next utterance buttons
-        #self.browser_browse_button = QPushButton("Browse")
-        #browser_layout.addWidget(self.browser_browse_button, i, 2)
         self.record_button = QPushButton("Record")
         browser_layout.addWidget(self.record_button, i, 1)
         self.play_button = QPushButton("Play")
         browser_layout.addWidget(self.play_button, i, 2)
         self.stop_button = QPushButton("Stop")
         browser_layout.addWidget(self.stop_button, i, 3)
+        self.browser_browse_button = QPushButton("Browse")
+        browser_layout.addWidget(self.browser_browse_button, i, 4)
         i += 1
 
 
@@ -531,8 +538,11 @@ class UI(QDialog):
         browser_layout.addWidget(QLabel("<b>Voice selection</b>"), i, 0)
         browser_layout.addWidget(self.utterance_history, i + 1, 0)
         self.encoder_box = QComboBox()
-        browser_layout.addWidget(QLabel("<b>Encoder</b>"), i, 1)
-        browser_layout.addWidget(self.encoder_box, i + 1, 1)
+        self.button_start_stt = QPushButton("STT")
+        browser_layout.addWidget(self.button_start_stt, i, 1)
+        self.button_start_stt.move(20, 80)
+        self.button_start_stt.clicked.connect(self.clickMethod)
+        self.show()
         self.synthesizer_box = QComboBox()
         browser_layout.addWidget(QLabel("<b>Synthesizer</b>"), i, 2)
         browser_layout.addWidget(self.synthesizer_box, i + 1, 2)
@@ -544,6 +554,7 @@ class UI(QDialog):
         browser_layout.addWidget(QLabel("<b>Audio Output</b>"), i, 4)
         browser_layout.addWidget(self.audio_out_devices_cb, i + 1, 4)
         i += 2
+
 
         #Replay & Save Audio
         browser_layout.addWidget(QLabel("<b>Toolbox Output:</b>"), i, 0)
@@ -631,3 +642,12 @@ class UI(QDialog):
 
     def start(self):
         self.app.exec_()
+
+    def clickMethod(self):
+        content = self.utterance_history.currentText()
+        path="STT/"+content
+        print(path)
+        text=get_large_audio_transcription(path)
+        #playsound("STT/preamble10.wav")
+        print("\nText:", text)
+
