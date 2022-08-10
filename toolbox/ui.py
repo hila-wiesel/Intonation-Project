@@ -403,7 +403,7 @@ class UI(QDialog):
             self.utterance_history.removeItem(self.max_saved_utterances)
 
         #self.play_button.setDisabled(False)
-        #self.generate_button.setDisabled(False)
+        self.generate_button.setDisabled(False)
         self.synthesize_button.setDisabled(False)
 
     def log(self, line, mode="newline"):
@@ -454,7 +454,7 @@ class UI(QDialog):
         self.draw_umap_projections(set())
         self.set_loading(0)
         #self.play_button.setDisabled(True)
-        #self.generate_button.setDisabled(True)
+        self.generate_button.setDisabled(True)
         self.synthesize_button.setDisabled(True)
         self.vocode_button.setDisabled(True)
         #self.replay_wav_button.setDisabled(True)
@@ -574,10 +574,11 @@ class UI(QDialog):
         #browser_layout.addWidget(self.record_buttonIn, i, 1)
         self.browser_browse_button1 = QPushButton("Browse")
         browser_layout.addWidget(self.browser_browse_button1, i, 1)
+        #self.text_prompt = QPlainTextEdit(default_text)
+        #browser_layout.addWidget(self.text_prompt, i+1,1)
+        #self.text_prompt.move(10,10)
+
         ## Generation
-        self.text_prompt = QPlainTextEdit(default_text)
-        gen_layout.addWidget(self.text_prompt, stretch=1)
-        self.text_prompt.move(10,10)
         #self.play_button = QPushButton("Play")
         #browser_layout.addWidget(self.play_button, i, 2)
         #self.stop_button = QPushButton("Stop")
@@ -598,10 +599,10 @@ class UI(QDialog):
         #browser_layout.addWidget(self.utterance_sentenceText, i,1)
 
         i += 1
-        browser_layout.addWidget(QLabel("<b>In order for us to recognize your voice please record the following sentence:</b>"), i, 0)
+        browser_layout.addWidget(QLabel("In order for us to recognize your voice please record the following sentence:\nWe the people of the united states in order to form a more perfect union"), i, 0)
         i += 1
-        browser_layout.addWidget(QLabel("<b>We the people of the united states in order to form a more perfect union</b>"), i, 0)
-        i += 1
+        #browser_layout.addWidget(QLabel("<b>We the people of the united states in order to form a more perfect union</b>"), i, 0)
+        #i += 1
         # Random & next utterance buttons
         #self.browser_browse_button = QPushButton("Browse")
         #browser_layout.addWidget(self.browser_browse_button, i, 0)
@@ -672,10 +673,12 @@ class UI(QDialog):
 
 
 
+        self.text_prompt = QPlainTextEdit(default_text)
+        gen_layout.addWidget(self.text_prompt,stretch=1)
+        self.text_prompt.move(10,10)
 
-
-        #self.generate_button = QPushButton("Synthesize and vocode")
-        #gen_layout.addWidget(self.generate_button)
+        self.generate_button = QPushButton("Synthesize and vocode")
+        gen_layout.addWidget(self.generate_button)
 
         layout = QHBoxLayout()
         self.synthesize_button = QPushButton("Synthesize only")
@@ -703,6 +706,17 @@ class UI(QDialog):
         self.log_window = QLabel()
         self.log_window.setAlignment(Qt.AlignBottom | Qt.AlignLeft)
         gen_layout.addWidget(self.log_window)
+
+        #self.titel_part_one = QLabel("<b>Part 1- Choose the voice : </b>")
+        #browser_layout.addWidget(self.titel_part_one , i, 0)
+
+        self.txt_window = QLabel()
+        self.txt_window.setAlignment(Qt.AlignBottom | Qt.AlignLeft)
+        browser_layout.addWidget(self.txt_window,i,1)
+
+
+
+
         self.logs = []
         gen_layout.addStretch()
 
@@ -722,6 +736,15 @@ class UI(QDialog):
         self.app.exec_()
 
     def textfun(self,text):
-        self.text_prompt.appendPlainText(text)
+
+        #self.text_prompt.appendPlainText("")
+        #self.text_prompt.appendPlainText(text)
+
+        text= text.replace(".",".\n")
+        print(text)
+        #msg = text
+        #str.split()
+        self.txt_window.setText(text)
+        #self.log(msg)
         #self.titel_two1 = QLabel(text)
         #self.browser_layout.addWidget(self.titel_two1 , 0, 0)
