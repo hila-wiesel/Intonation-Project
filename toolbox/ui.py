@@ -1,9 +1,17 @@
 import sys
-import utils
 from pathlib import Path
 from time import sleep
 from typing import List, Set
 from warnings import filterwarnings, warn
+
+from scipy.io.wavfile import write
+
+
+import sounddevice
+
+from encoder import inference as encoder
+import speech_recognition as sr
+
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,12 +25,12 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from encoder.inference import plot_embedding_as_heatmap
 from toolbox.utterance import Utterance
 
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+import sys
+
 from STT.main import get_large_audio_transcription
 filterwarnings("ignore")
-
-from playsound import playsound
-from pydub import AudioSegment
-from pydub.playback import play
 
 
 colormap = np.array([
@@ -42,21 +50,21 @@ colormap = np.array([
     [76, 255, 0],
 ], dtype=np.float) / 255
 
-# default_text = \
-#     "Welcome to the toolbox! To begin, load an utterance from your datasets or record one " \
-#     "yourself.\nOnce its embedding has been created, you can synthesize any text written here.\n" \
-#     "The synthesizer expects to generate " \
-#     "outputs that are somewhere between 5 and 12 seconds.\nTo mark breaks, write a new line. " \
-#     "Each line will be treated separately.\nThen, they are joined together to make the final " \
-#     "spectrogram. Use the vocoder to generate audio.\nThe vocoder generates almost in constant " \
-#     "time, so it will be more time efficient for longer inputs like this one.\nOn the left you " \
-#     "have the embedding projections. Load or record more utterances to see them.\nIf you have " \
-#     "at least 2 or 3 utterances from a same speaker, a cluster should form.\nSynthesized " \
-#     "utterances are of the same color as the speaker whose voice was used, but they're " \
-#     "represented with a cross."
+default_text = \
+    "Welcome to the toolbox! To begin, load an utterance from your datasets or record one " \
+    "yourself.\nOnce its embedding has been created, you can synthesize any text written here.\n" \
+    "The synthesizer expects to generate " \
+    "outputs that are somewhere between 5 and 12 seconds.\nTo mark breaks, write a new line. " \
+    "Each line will be treated separately.\nThen, they are joined together to make the final " \
+    "spectrogram. Use the vocoder to generate audio.\nThe vocoder generates almost in constant " \
+    "time, so it will be more time efficient for longer inputs like this one.\nOn the left you " \
+    "have the embedding projections. Load or record more utterances to see them.\nIf you have " \
+    "at least 2 or 3 utterances from a same speaker, a cluster should form.\nSynthesized " \
+    "utterances are of the same color as the speaker whose voice was used, but they're " \
+    "represented with a cross."
 
-path = 'STT/preamble10.wav'
-default_text = get_large_audio_transcription(path)
+#path = 'STT\\preamble10.wav'
+#default_text = get_large_audio_transcription(path)
 
 class UI(QDialog):
     min_umap_points = 4
@@ -240,13 +248,34 @@ class UI(QDialog):
 
         return wav.squeeze()
 
+    def record_oneIn(self, sample_rate, duration):
+        #self.record_buttonIn.setText("Recording...")
+        #self.record_buttonIn.setDisabled(True)
+
+        self.log("Recording %d seconds of audio" % duration)
+        sd.stop()
+        try:
+            wav = sd.rec(duration * sample_rate, sample_rate, 1)
+        except Exception as e:
+            print(e)
+            self.log("Could not record anything. Is your recording device enabled?")
+            self.log("Your device must be connected before you start the toolbox.")
+            return None
+
+        sd.wait()
+
+        self.log("Done recording.")
+        #self.record_buttonIn.setText("Record")
+        #self.record_buttonIn.setDisabled(False)
+
+        return wav
     #@property
     #def current_dataset_name(self):
-        #return self.dataset_box.currentText()
+    #return self.dataset_box.currentText()
 
     #@property
     #def current_speaker_name(self):
-        #return self.speaker_box.currentText()
+    #return self.speaker_box.currentText()
 
     @property
     def current_utterance_name(self):
@@ -259,6 +288,15 @@ class UI(QDialog):
             filter="Audio Files (*.mp3 *.flac *.wav *.m4a)"
         )
         return Path(fpath[0]) if fpath[0] != "" else ""
+
+    def browse_file1(self):
+        fpath = QFileDialog().getOpenFileName(
+            parent=self,
+            caption="Select an audio file",
+            filter="Audio Files (*.mp3 *.flac *.wav *.m4a)"
+        )
+        print("fpath        ",fpath[0])
+        return fpath[0]
 
     @staticmethod
     def repopulate_box(box, items, random=False):
@@ -283,7 +321,7 @@ class UI(QDialog):
             if datasets_root is not None:
                 datasets = [datasets_root.joinpath(d) for d in recognized_datasets]
                 datasets = [d.relative_to(datasets_root) for d in datasets if d.exists()]
-                self.browser_load_button.setDisabled(len(datasets) == 0)
+                #self.browser_load_button.setDisabled(len(datasets) == 0)
             if datasets_root is None or len(datasets) == 0:
                 msg = "Warning: you d" + ("id not pass a root directory for datasets as argument" \
                                               if datasets_root is None else "o not have any of the recognized datasets" \
@@ -300,16 +338,16 @@ class UI(QDialog):
                 #self.utterance_box.setDisabled(True)
                 #self.speaker_box.setDisabled(True)
                 #self.dataset_box.setDisabled(True)
-                self.browser_load_button.setDisabled(True)
+                #self.browser_load_button.setDisabled(True)
                 #self.auto_next_checkbox.setDisabled(True)
                 return
             #self.repopulate_box(self.dataset_box, datasets, random)
 
         # Select a random speaker
         #if level <= 1:
-            #speakers_root = datasets_root.joinpath(self.current_dataset_name)
-            #speaker_names = [d.stem for d in speakers_root.glob("*") if d.is_dir()]
-            #self.repopulate_box(self.speaker_box, speaker_names, random)
+        #speakers_root = datasets_root.joinpath(self.current_dataset_name)
+        #speaker_names = [d.stem for d in speakers_root.glob("*") if d.is_dir()]
+        #self.repopulate_box(self.speaker_box, speaker_names, random)
 
         # Select a random utterance
         if level <= 2:
@@ -324,8 +362,8 @@ class UI(QDialog):
             #self.repopulate_box(self.utterance_box, utterances, random)
 
     #def browser_select_next(self):
-        #index = (self.utterance_box.currentIndex() + 1) % len(self.utterance_box)
-        #self.utterance_box.setCurrentIndex(index)
+    #index = (self.utterance_box.currentIndex() + 1) % len(self.utterance_box)
+    #self.utterance_box.setCurrentIndex(index)
 
     @property
     def current_encoder_fpath(self):
@@ -373,8 +411,7 @@ class UI(QDialog):
         if len(self.utterance_history) > self.max_saved_utterances:
             self.utterance_history.removeItem(self.max_saved_utterances)
 
-        self.play_button.setDisabled(False)
-        #self.start_stt.setDisabled(False)
+        #self.play_button.setDisabled(False)
         self.generate_button.setDisabled(False)
         self.synthesize_button.setDisabled(False)
 
@@ -425,8 +462,7 @@ class UI(QDialog):
         self.draw_spec(None, "generated")
         self.draw_umap_projections(set())
         self.set_loading(0)
-        self.play_button.setDisabled(True)
-        #self.start_stt.setDisabled(True)
+        #self.play_button.setDisabled(True)
         self.generate_button.setDisabled(True)
         self.synthesize_button.setDisabled(True)
         self.vocode_button.setDisabled(True)
@@ -434,6 +470,23 @@ class UI(QDialog):
         self.export_wav_button.setDisabled(True)
         [self.log("") for _ in range(self.max_log_lines)]
 
+    def recordIn(self):
+        wav = sounddevice.rec(5 * encoder.sampling_rate, encoder.sampling_rate, 1)
+        # wav = self.record_oneIn(encoder.sampling_rate, 5)
+
+        if wav is None:
+            return
+
+        sounddevice.wait()
+        filename = write("out.wav", encoder.sampling_rate, wav)
+        r = sr.Recognizer()
+
+        with sr.AudioFile(filename) as source:
+            # listen for the data (load audio to memory)
+            audio_data = r.record(source)
+            # recognize (convert from speech to text)
+            text = r.recognize_google(audio_data)
+            # print(text)
 
     def __init__(self):
         ## Initialize the application
@@ -486,8 +539,8 @@ class UI(QDialog):
         #self.utterance_box = QComboBox()
         #browser_layout.addWidget(QLabel("<b>Utterance</b>"), i, 2)
         #browser_layout.addWidget(self.utterance_box, i + 1, 2)
-        self.browser_load_button = QPushButton("Load")
-        browser_layout.addWidget(self.browser_load_button, i + 1, 3)
+        #self.browser_load_button = QPushButton("Load")
+        #browser_layout.addWidget(self.browser_load_button, i + 1, 3)
 
         #i += 2
 
@@ -504,45 +557,77 @@ class UI(QDialog):
         i += 1
 
         # Utterance box
+        self.titel_part_one = QLabel("<b>Part 1- Choose the voice : </b>")
+        browser_layout.addWidget(self.titel_part_one , i, 0)
+        self.titel_part_one.setFont(QFont('Times', 25))
+        self.titel_part_two = QLabel("<b>Part 2- Recording for sentence selection : </b>")
+        browser_layout.addWidget(self.titel_part_two  , i, 1)
+        self.titel_part_two.setFont(QFont('Times', 25))
+        i += 1
 
-        browser_layout.addWidget(QLabel("<b>Add New User</b>"), i, 0)
-        self.utterance_historyText = QLineEdit("Name For Save:", self)
-        browser_layout.addWidget(self.utterance_historyText, i,1)
-        self.button = QPushButton('Add', self)
-        browser_layout.addWidget(self.button, i,2)
+        self.titel_explaine = QLabel("              - by creating a new user or from existing users")
+        browser_layout.addWidget(self.titel_explaine , i, 0)
+        self.titel_explaine.setFont(QFont('Times', 20))
+        i += 1
+
+        self.titel_one = QLabel("<b>Option 1: Add New User</b>")
+        browser_layout.addWidget(self.titel_one , i, 0)
+        #self.titel_one.setFont(QFont( 15))
+
+        self.titel_two = QLabel("<b>Record your own sentence with intonation</b>")
+        browser_layout.addWidget(self.titel_two , i, 1)
+        #self.titel_two.setFont(QFont( 15)) #Arial
+        i += 1
+
+        #self.record_buttonIn = QPushButton("Record")
+        #browser_layout.addWidget(self.record_buttonIn, i, 1)
+        self.browser_browse_button1 = QPushButton("Browse")
+        browser_layout.addWidget(self.browser_browse_button1, i, 1)
+        #self.play_button = QPushButton("Play")
+        #browser_layout.addWidget(self.play_button, i, 2)
+        #self.stop_button = QPushButton("Stop")
+        #browser_layout.addWidget(self.stop_button, i, 3)
+
+        self.utterance_historyText = QLineEdit("Your Name", self)
+        browser_layout.addWidget(self.utterance_historyText, i,0)
+        i += 1
+        self.button = QPushButton("Add", self)
+        browser_layout.addWidget(self.button, i,0)
         self.button.move(20, 80)
         self.button.clicked.connect(self.on_click1)
         self.show()
 
-
+        # intonation text
+        text = ""
+        self.utterance_sentenceText = QLineEdit(text, self)
+        browser_layout.addWidget(self.utterance_sentenceText, i,1)
         i += 1
-        browser_layout.addWidget(QLabel("<b>Hello, in order for us to recognize your voice\n, please record the following sentence:</b>"), i, 0)
+
+        browser_layout.addWidget(QLabel("<b>In order for us to recognize your voice please record the following sentence:</b>"), i, 0)
         i += 1
         browser_layout.addWidget(QLabel("<b>We the people of the united states in order to form a more perfect union</b>"), i, 0)
-
-
-        # Random & next utterance buttons
-        self.record_button = QPushButton("Record")
-        browser_layout.addWidget(self.record_button, i, 1)
-        self.play_button = QPushButton("Play")
-        browser_layout.addWidget(self.play_button, i, 2)
-        self.stop_button = QPushButton("Stop")
-        browser_layout.addWidget(self.stop_button, i, 3)
-        self.browser_browse_button = QPushButton("Browse")
-        browser_layout.addWidget(self.browser_browse_button, i, 4)
         i += 1
+        # Random & next utterance buttons
+        #self.browser_browse_button = QPushButton("Browse")
+        #browser_layout.addWidget(self.browser_browse_button, i, 0)
+        self.record_button = QPushButton("Record")
+        browser_layout.addWidget(self.record_button, i, 0)
+        self.play_button = QPushButton("Play")
+        i += 1
+        browser_layout.addWidget(self.play_button, i, 0)
+        i += 1
+        self.stop_button = QPushButton("Stop")
+        browser_layout.addWidget(self.stop_button, i, 0)
+        i += 2
 
 
         # Model and audio output selection
         self.utterance_history = QComboBox()
-        browser_layout.addWidget(QLabel("<b>Voice selection</b>"), i, 0)
+        browser_layout.addWidget(QLabel("<b>Option 2: Voice selection</b>"), i, 0)
         browser_layout.addWidget(self.utterance_history, i + 1, 0)
         self.encoder_box = QComboBox()
-        self.button_start_stt = QPushButton("STT")
-        browser_layout.addWidget(self.button_start_stt, i, 1)
-        self.button_start_stt.move(20, 80)
-        self.button_start_stt.clicked.connect(self.clickMethod)
-        self.show()
+        browser_layout.addWidget(QLabel("<b>Encoder</b>"), i, 1)
+        browser_layout.addWidget(self.encoder_box, i + 1, 1)
         self.synthesizer_box = QComboBox()
         browser_layout.addWidget(QLabel("<b>Synthesizer</b>"), i, 2)
         browser_layout.addWidget(self.synthesizer_box, i + 1, 2)
@@ -554,7 +639,6 @@ class UI(QDialog):
         browser_layout.addWidget(QLabel("<b>Audio Output</b>"), i, 4)
         browser_layout.addWidget(self.audio_out_devices_cb, i + 1, 4)
         i += 2
-
 
         #Replay & Save Audio
         browser_layout.addWidget(QLabel("<b>Toolbox Output:</b>"), i, 0)
@@ -642,12 +726,4 @@ class UI(QDialog):
 
     def start(self):
         self.app.exec_()
-
-    def clickMethod(self):
-        content = self.utterance_history.currentText()
-        path="STT/"+content
-        print(path)
-        text=get_large_audio_transcription(path)
-        #playsound("STT/preamble10.wav")
-        print("\nText:", text)
 
