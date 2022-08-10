@@ -29,6 +29,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 import sys
 
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QApplication, QWidget, QPlainTextEdit, QVBoxLayout
 from STT.main import get_large_audio_transcription
 filterwarnings("ignore")
 
@@ -50,18 +52,7 @@ colormap = np.array([
     [76, 255, 0],
 ], dtype=np.float) / 255
 
-default_text = \
-    "Welcome to the toolbox! To begin, load an utterance from your datasets or record one " \
-    "yourself.\nOnce its embedding has been created, you can synthesize any text written here.\n" \
-    "The synthesizer expects to generate " \
-    "outputs that are somewhere between 5 and 12 seconds.\nTo mark breaks, write a new line. " \
-    "Each line will be treated separately.\nThen, they are joined together to make the final " \
-    "spectrogram. Use the vocoder to generate audio.\nThe vocoder generates almost in constant " \
-    "time, so it will be more time efficient for longer inputs like this one.\nOn the left you " \
-    "have the embedding projections. Load or record more utterances to see them.\nIf you have " \
-    "at least 2 or 3 utterances from a same speaker, a cluster should form.\nSynthesized " \
-    "utterances are of the same color as the speaker whose voice was used, but they're " \
-    "represented with a cross."
+default_text = ""
 
 #path = 'STT\\preamble10.wav'
 #default_text = get_large_audio_transcription(path)
@@ -412,7 +403,7 @@ class UI(QDialog):
             self.utterance_history.removeItem(self.max_saved_utterances)
 
         #self.play_button.setDisabled(False)
-        self.generate_button.setDisabled(False)
+        #self.generate_button.setDisabled(False)
         self.synthesize_button.setDisabled(False)
 
     def log(self, line, mode="newline"):
@@ -463,7 +454,7 @@ class UI(QDialog):
         self.draw_umap_projections(set())
         self.set_loading(0)
         #self.play_button.setDisabled(True)
-        self.generate_button.setDisabled(True)
+        #self.generate_button.setDisabled(True)
         self.synthesize_button.setDisabled(True)
         self.vocode_button.setDisabled(True)
         self.replay_wav_button.setDisabled(True)
@@ -680,8 +671,9 @@ class UI(QDialog):
         self.text_prompt = QPlainTextEdit(default_text)
         gen_layout.addWidget(self.text_prompt, stretch=1)
 
-        self.generate_button = QPushButton("Synthesize and vocode")
-        gen_layout.addWidget(self.generate_button)
+
+        #self.generate_button = QPushButton("Synthesize and vocode")
+        #gen_layout.addWidget(self.generate_button)
 
         layout = QHBoxLayout()
         self.synthesize_button = QPushButton("Synthesize only")
@@ -727,3 +719,7 @@ class UI(QDialog):
     def start(self):
         self.app.exec_()
 
+    def textfun(self,text):
+        self.text_prompt.appendPlainText(text)
+        #self.titel_two1 = QLabel(text)
+        #self.browser_layout.addWidget(self.titel_two1 , 0, 0)
