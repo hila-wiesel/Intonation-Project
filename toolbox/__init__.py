@@ -116,7 +116,7 @@ class Toolbox:
 
         # Generation
         func = lambda: self.synthesize() or self.vocode()
-        self.ui.generate_button.clicked.connect(func)
+        #self.ui.generate_button.clicked.connect(func)
         self.ui.synthesize_button.clicked.connect(self.synthesize)
         self.ui.vocode_button.clicked.connect(self.vocode)
         self.ui.random_seed_checkbox.clicked.connect(self.update_seed_textbox)
@@ -183,6 +183,10 @@ class Toolbox:
             text=get_large_audio_transcription(fpath)
             print(text)
             self.ui.utterance_sentenceText.setText(text)
+            self.ui.textfun(text)
+            #self.ui.text_prompt.appendPlainText(text)
+            #self.ui.utterance_sentenceText.move(20, 20)
+
 
     def record(self):
         wav = self.ui.record_one(encoder.sampling_rate, 5)
