@@ -28,13 +28,12 @@ Output: Analysis of the sentence meaning of the first audio
 
 ### The process:
 
-![image](https://user-images.githubusercontent.com/61710157/181001454-2949f9d3-8258-4bc5-918c-264c163dd0b7.png)
-
+![image](https://user-images.githubusercontent.com/61710157/184395198-5538482d-a80b-4e0f-b1c6-938a1e34337d.png)
 
 
 ### Intonation process:
 
-![image](https://github.com/hila-wiesel/Intonation-Project/blob/main/pictures/process-diagram.png)
+![image](https://user-images.githubusercontent.com/61710157/184392779-de81a2fb-f016-4baa-bfa9-ca7861da1780.png)
 
 
 ## Setup
