@@ -29,9 +29,15 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 import sys
 
+from matplotlib.backend_bases import MouseButton
+import matplotlib.pyplot as plt
+import numpy as np
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QWidget, QPlainTextEdit, QVBoxLayout
 from STT.main import get_large_audio_transcription
+from analize import *
+
+import analize
 filterwarnings("ignore")
 
 
@@ -649,8 +655,34 @@ class UI(QDialog):
         #self.export_wav_button = QPushButton("Export")
         #self.export_wav_button.setToolTip("Save last generated vocoder audio in filesystem as a wav file")
         #browser_layout.addWidget(self.export_wav_button, i, 3)
-        i += 1
+       
 
+        i += 1
+        j=0
+        j+= 1
+        self.word1 = QPushButton("")
+        browser_layout.addWidget(self.word1, j, 3)
+        j+= 1
+        self.word2 = QPushButton("")
+        browser_layout.addWidget(self.word2, j, 3)
+        j+= 1
+        self.word3 = QPushButton("")
+        browser_layout.addWidget(self.word3, j, 3)
+        j+= 1
+        self.word4 = QPushButton("")
+        browser_layout.addWidget(self.word4, j, 3)
+        j+= 1
+        self.word5 = QPushButton("")
+        browser_layout.addWidget(self.word5, j, 3)
+        j+= 1
+        self.word6 = QPushButton("")
+        browser_layout.addWidget(self.word6, j, 3)
+        j+= 1
+        self.word7 = QPushButton("")
+        browser_layout.addWidget(self.word7, j, 3)
+        j+= 1
+        self.word8 = QPushButton("")
+        browser_layout.addWidget(self.word8, j, 3)
 
         ## Embed & spectrograms
         vis_layout.addStretch()
@@ -735,16 +767,70 @@ class UI(QDialog):
     def start(self):
         self.app.exec_()
 
+    def plot(self):
+        words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analize.get_val()
+        print(words)
+        bold_yourBag2, fft_yourBag2, cros_yourBag2 = bolds_fft(words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2, 30000)
+        xf_orig = fft_yourBag2['I'][0]
+        yf_orig = fft_yourBag2['I'][1]
+        xf_gen = fft_yourBag2['I'][2]
+        yf_gen = fft_yourBag2['I'][3]
+
+        fft_plot(xf_orig, yf_orig, "original", start=20, color='b')
+        fft_plot(xf_gen, yf_gen, "generated", start=20, color='g')
+        plt.show()
+
     def textfun(self,text):
-
-        #self.text_prompt.appendPlainText("")
-        #self.text_prompt.appendPlainText(text)
-
-        text= text.replace(".",".\n")
-        print(text)
-        #msg = text
-        #str.split()
+        words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analize.get_val()
+        print(words)
+        bold_yourBag2, fft_yourBag2, cros_yourBag2 = bolds_fft(words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2, 30000)
         self.txt_window.setText(text)
-        #self.log(msg)
-        #self.titel_two1 = QLabel(text)
-        #self.browser_layout.addWidget(self.titel_two1 , 0, 0)
+        arr=text.split(" ")
+        print(bold_yourBag2)
+        values = bold_yourBag2.values()
+        values_list = list(values)
+        print(values_list)
+        for i in range (1,(len(arr))):
+            if(i==1):
+                self.word1.setText(arr[i-1])
+                if values_list[i-1]:
+                    self.word1.setStyleSheet('background-color: red;')
+            if(i==2):
+                self.word2.setText(arr[i-1])
+                if values_list[i-1]:
+                     self.word2.setStyleSheet('background-color: red;')
+            if(i==3):
+                self.word3.setText(arr[i-1])
+                if values_list[i-1]:
+                    self.word3.setStyleSheet('background-color: red;')
+            if(i==4):
+                self.word4.setText(arr[i-1])
+                if values_list[i-1]:
+                    self.word4.setStyleSheet('background-color: red;')
+            if(i==5):
+                self.word5.setText(arr[i-1])
+                if values_list[i-1]:
+                    self.word5.setStyleSheet('background-color: red;')
+            if(i==6):
+                self.word6.setText(arr[i-1])
+                if values_list[i-1]:
+                    self.word6.setStyleSheet('background-color: red;')
+            if(i==7):
+                self.word7.setText(arr[i-1])
+                if values_list[i-1]:
+                    self.word7.setStyleSheet('background-color: red;')
+            if(i==8):
+                self.word8.setText(arr[i-1])
+                if values_list[i-1]:
+                    self.word8.setStyleSheet('background-color: red;')
+            if(i==9):
+                self.word9.setText(arr[i-1])
+                if values_list[i-1]:
+                    self.word9.setStyleSheet('background-color: red;')
+            if(i==10):
+                self.word10.setText(arr[i-1])
+                if values_list[i-1]:
+                    self.word10.setStyleSheet('background-color: red;')
+
+
+
