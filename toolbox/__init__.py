@@ -102,6 +102,7 @@ class Toolbox:
         #self.ui.play_button.clicked.connect(func)
         self.ui.stop_button.clicked.connect(self.ui.stop)
         self.ui.record_button.clicked.connect(self.record)
+        self.ui.word1.clicked.connect(self.ui.plot)
         #self.ui.record_buttonIn.clicked.connect(self.ui.recordIn)
 
         #Audio
