@@ -33,7 +33,7 @@ Output: Analysis of the sentence meaning of the first audio
 
 ### Intonation process:
 
-![image](https://user-images.githubusercontent.com/61710157/184392779-de81a2fb-f016-4baa-bfa9-ca7861da1780.png)
+![image](https://user-images.githubusercontent.com/61710157/184395287-20afd24b-6ea6-4a00-a791-30cea05787ce.png)
 
 
 ## Setup
