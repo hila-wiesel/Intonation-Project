@@ -28,7 +28,7 @@ Output: Analysis of the sentence meaning of the first audio
 
 ### The process:
 
-![image](https://user-images.githubusercontent.com/61710157/184395198-5538482d-a80b-4e0f-b1c6-938a1e34337d.png)
+![image](https://user-images.githubusercontent.com/61710157/184504179-edf732a4-3e61-4ced-84b4-5f13c1be3b3f.png)
 
 
 ### Intonation process:
