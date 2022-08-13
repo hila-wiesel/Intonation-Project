@@ -49,18 +49,10 @@ Output: Analysis of the sentence meaning of the first audio
 Pretrained models are now downloaded automatically. If this doesn't work for you, you can manually download them [here](https://github.com/CorentinJ/Real-Time-Voice-Cloning/wiki/Pretrained-models).
 
 
-### 3. (Optional) Test Configuration
-Before you download any dataset, you can begin by testing your configuration with:
-
-`python demo_cli.py`
-
-If all tests pass, you're good to go.
-
-
-### 4. Launch the Toolbox
+### 3. Launch the Toolbox
 You can then try the toolbox:
 
-`python demo_toolbox.py`  
+`python demo_toolbox.py` 
 
 
 
