@@ -67,7 +67,15 @@ class UI(QDialog):
     min_umap_points = 4
     max_log_lines = 5
     max_saved_utterances = 20
-
+    #bold_yourBag2={}
+    #fft_yourBag2={}
+    #cros_yourBag2={}
+    words=["","","","","","","","","",""]
+    thewords, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analize.get_val()
+    for i in range(len(thewords)):
+        words.insert(i , thewords[i])
+    print(words)
+    bold_yourBag2, fft_yourBag2, cros_yourBag2 = bolds_fft(thewords, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2, 30000)
     def draw_utterance(self, utterance: Utterance, which):
         self.draw_spec(utterance.spec, which)
         self.draw_embed(utterance.embed, utterance.name, which)
@@ -106,20 +114,20 @@ class UI(QDialog):
         spec_ax.figure.canvas.draw()
         if which != "current":
             self.vocode_button.setDisabled(spec is None)
-
+    '''
     def draw_umap_projections(self, utterances: Set[Utterance]):
-        self.umap_ax.clear()
+        #self.umap_ax.clear()
 
         speakers = np.unique([u.speaker_name for u in utterances])
         colors = {speaker_name: colormap[i] for i, speaker_name in enumerate(speakers)}
         embeds = [u.embed for u in utterances]
 
         # Display a message if there aren't enough points
-        if len(utterances) < self.min_umap_points:
-            self.umap_ax.text(.5, .5, "Add %d more points to\ngenerate the projections" %
-                              (self.min_umap_points - len(utterances)),
-                              horizontalalignment='center', fontsize=15)
-            self.umap_ax.set_title("")
+        #if len(utterances) < self.min_umap_points:
+            #self.umap_ax.text(.5, .5, "Add %d more points to\ngenerate the projections" %
+            #                  (self.min_umap_points - len(utterances)),
+            #                  horizontalalignment='center', fontsize=15)
+            #self.umap_ax.set_title("")
 
         # Compute the projections
         else:
@@ -146,7 +154,7 @@ class UI(QDialog):
         self.umap_ax.set_xticks([])
         self.umap_ax.set_yticks([])
         self.umap_ax.figure.canvas.draw()
-
+    '''
     def save_audio_file(self, wav, sample_rate):
         dialog = QFileDialog()
         dialog.setDefaultSuffix(".wav")
@@ -457,7 +465,7 @@ class UI(QDialog):
         self.draw_embed(None, None, "generated")
         self.draw_spec(None, "current")
         self.draw_spec(None, "generated")
-        self.draw_umap_projections(set())
+        #self.draw_umap_projections(set())
         self.set_loading(0)
         #self.play_button.setDisabled(True)
         self.generate_button.setDisabled(True)
@@ -516,12 +524,12 @@ class UI(QDialog):
 
         ## Projections
         # UMap
-        fig, self.umap_ax = plt.subplots(figsize=(3, 3), facecolor="#F0F0F0")
-        fig.subplots_adjust(left=0.02, bottom=0.02, right=0.98, top=0.98)
-        self.projections_layout.addWidget(FigureCanvas(fig))
-        self.umap_hot = False
-        self.clear_button = QPushButton("Clear")
-        self.projections_layout.addWidget(self.clear_button)
+        #fig, self.umap_ax = plt.subplots(figsize=(3, 3), facecolor="#F0F0F0")
+        #fig.subplots_adjust(left=0.02, bottom=0.02, right=0.98, top=0.98)
+        #self.projections_layout.addWidget(FigureCanvas(fig))
+        #self.umap_hot = False
+        #self.clear_button = QPushButton("Clear")
+        #self.projections_layout.addWidget(self.clear_button)
 
 
         ## Browser
@@ -655,7 +663,7 @@ class UI(QDialog):
         #self.export_wav_button = QPushButton("Export")
         #self.export_wav_button.setToolTip("Save last generated vocoder audio in filesystem as a wav file")
         #browser_layout.addWidget(self.export_wav_button, i, 3)
-       
+
 
         i += 1
         j=0
@@ -683,7 +691,12 @@ class UI(QDialog):
         j+= 1
         self.word8 = QPushButton("")
         browser_layout.addWidget(self.word8, j, 3)
-
+        j+= 1
+        self.word9 = QPushButton("")
+        browser_layout.addWidget(self.word9, j, 3)
+        j+= 1
+        self.word10 = QPushButton("")
+        browser_layout.addWidget(self.word10, j, 3)
         ## Embed & spectrograms
         vis_layout.addStretch()
 
@@ -767,27 +780,38 @@ class UI(QDialog):
     def start(self):
         self.app.exec_()
 
-    def plot(self):
-        words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analize.get_val()
-        print(words)
-        bold_yourBag2, fft_yourBag2, cros_yourBag2 = bolds_fft(words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2, 30000)
-        xf_orig = fft_yourBag2['I'][0]
-        yf_orig = fft_yourBag2['I'][1]
-        xf_gen = fft_yourBag2['I'][2]
-        yf_gen = fft_yourBag2['I'][3]
+    def plot(self,level):
+        #words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analize.get_val()
+        #print(words)
+        #bold_yourBag2, fft_yourBag2, cros_yourBag2 = bolds_fft(words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2, 30000)
+        #fig, axs = plt.subplots(2, 1)
+        #print(self.words[ind])
+        #print(ind)
+        #print(type(ind))
+        if level!= "":
+            print(self.fft_yourBag2)
+            ind=1
+            print(self.words[ind])
 
-        fft_plot(xf_orig, yf_orig, "original", start=20, color='b')
-        fft_plot(xf_gen, yf_gen, "generated", start=20, color='g')
-        plt.show()
+            xf_orig = self.fft_yourBag2[level][0]
+            yf_orig = self.fft_yourBag2[level][1]
+            xf_gen = self.fft_yourBag2[level][2]
+            yf_gen = self.fft_yourBag2[level][3]
+
+            x = self.cros_yourBag2[level][0]
+            #print(x)
+            corr = self.cros_yourBag2[level][1]
+            #print(corr)
+            analize.fft_plot(xf_orig, yf_orig, "original", start=20, color='b',x= self.cros_yourBag2['I'][0],corr= self.cros_yourBag2[self.words[ind]][1])
+            analize.fft_plot(xf_gen, yf_gen, "generated", start=20, color='g',x= self.cros_yourBag2['I'][0],corr= self.cros_yourBag2[self.words[ind]][1])
+
+            plt.show()
 
     def textfun(self,text):
-        words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analize.get_val()
-        print(words)
-        bold_yourBag2, fft_yourBag2, cros_yourBag2 = bolds_fft(words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2, 30000)
+
         self.txt_window.setText(text)
         arr=text.split(" ")
-        print(bold_yourBag2)
-        values = bold_yourBag2.values()
+        values = self.bold_yourBag2.values()
         values_list = list(values)
         print(values_list)
         for i in range (1,(len(arr))):
