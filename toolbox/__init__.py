@@ -102,7 +102,18 @@ class Toolbox:
         #self.ui.play_button.clicked.connect(func)
         self.ui.stop_button.clicked.connect(self.ui.stop)
         self.ui.record_button.clicked.connect(self.record)
-        self.ui.word1.clicked.connect(self.ui.plot)
+        print(self.ui.words[0])
+        func = lambda level: lambda: self.ui.plot(level)
+        self.ui.word1.clicked.connect(func(self.ui.words[0]))
+        self.ui.word2.clicked.connect(func(self.ui.words[1]))
+        self.ui.word3.clicked.connect(func(self.ui.words[2]))
+        self.ui.word4.clicked.connect(func(self.ui.words[3]))
+        self.ui.word5.clicked.connect(func(self.ui.words[4]))
+        self.ui.word6.clicked.connect(func(self.ui.words[5]))
+        self.ui.word7.clicked.connect(func(self.ui.words[6]))
+        self.ui.word8.clicked.connect(func(self.ui.words[7]))
+        self.ui.word9.clicked.connect(func(self.ui.words[8]))
+        self.ui.word10.clicked.connect(func(self.ui.words[9]))
         #self.ui.record_buttonIn.clicked.connect(self.ui.recordIn)
 
         #Audio
@@ -123,7 +134,7 @@ class Toolbox:
         self.ui.random_seed_checkbox.clicked.connect(self.update_seed_textbox)
 
         # UMAP legend
-        self.ui.clear_button.clicked.connect(self.clear_utterances)
+        #self.ui.clear_button.clicked.connect(self.clear_utterances)
 
     def set_current_wav(self, index):
         self.current_wav = self.waves_list[index]
