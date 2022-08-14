@@ -71,7 +71,7 @@ class UI(QDialog):
     #fft_yourBag2={}
     #cros_yourBag2={}
     words=["","","","","","","","","",""]
-    thewords, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analize.get_val()
+    thewords, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analize.get_val_H()
     for i in range(len(thewords)):
         words.insert(i , thewords[i])
     print(words)
@@ -301,6 +301,31 @@ class UI(QDialog):
             filter="Audio Files (*.mp3 *.flac *.wav *.m4a)"
         )
         print("fpath        ",fpath[0])
+        if(fpath[0]=="/Users/dinamaizlis/Desktop/Intonation-Project/STT/_yourBag.wav"):
+            self.words=["","","","","","","","","",""]
+            thewords, signal_yourBag, signal_gen, indexs_yourBag, indexs_gen= analize.get_val_H()
+            for i in range(len(thewords)):
+                self.words.insert(i , thewords[i])
+            print(self.words)
+            self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = bolds_fft(thewords, signal_yourBag, signal_gen, indexs_yourBag, indexs_gen, 30000)
+
+
+        if(fpath[0]=="/Users/dinamaizlis/Desktop/Intonation-Project/STT/_steal.wav"):
+            self.words=["","","","","","","","","",""]
+            thewords, signal_steal, signal_gen_N, indexs_steal, indexs_gen_N= analize.get_val_N()
+            for i in range(len(thewords)):
+                self.words.insert(i , thewords[i])
+            print(self.words)
+            self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = bolds_fft(thewords, signal_steal, signal_gen_N, indexs_steal, indexs_gen_N, 30000)
+
+        if(fpath[0]=="/Users/dinamaizlis/Desktop/Intonation-Project/STT/_hello.wav"):
+            self.words=["","","","","","","","","",""]
+            thewords, signal_hello, signal_gen_hello, indexs_hello, indexs_gen_hello= analize.get_val_Hallo()
+            for i in range(len(thewords)):
+                self.words.insert(i , thewords[i])
+            print(self.words)
+            self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = bolds_fft(thewords, signal_hello, signal_gen_hello, indexs_hello, indexs_gen_hello, 72000)
+
         return fpath[0]
 
     @staticmethod
@@ -780,7 +805,7 @@ class UI(QDialog):
     def start(self):
         self.app.exec_()
 
-    def plot(self,level):
+    def plot(self,level1):
         #words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analize.get_val()
         #print(words)
         #bold_yourBag2, fft_yourBag2, cros_yourBag2 = bolds_fft(words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2, 30000)
@@ -788,24 +813,28 @@ class UI(QDialog):
         #print(self.words[ind])
         #print(ind)
         #print(type(ind))
-        if level!= "":
-            print(self.fft_yourBag2)
-            ind=1
-            print(self.words[ind])
+        print("self.words   :",self.words)
+        if level1<len(self.words):
+            level=self.words[level1]
+            if level!= "":
+                print(self.fft_yourBag2)
+                ind=1
+                print(self.words[ind])
+                fft_yourBag3=list(self.fft_yourBag2.items())
+                xf_orig = fft_yourBag3[level1][1][0]
+                yf_orig = fft_yourBag3[level1][1][1]
+                xf_gen = fft_yourBag3[level1][1][2]
+                yf_gen = fft_yourBag3[level1][1][3]
 
-            xf_orig = self.fft_yourBag2[level][0]
-            yf_orig = self.fft_yourBag2[level][1]
-            xf_gen = self.fft_yourBag2[level][2]
-            yf_gen = self.fft_yourBag2[level][3]
+                self.cros_yourBag3=list(self.cros_yourBag2.items())
+                x = self.cros_yourBag3[level1][1][0]
+                #print(x)
+                corr = self.cros_yourBag3[level1][1][1]
+                #print(corr)
+                analize.fft_plot(xf_orig, yf_orig, "original", start=20, color='b',x= self.cros_yourBag3[level1][1][0],corr= self.cros_yourBag3[level1][1][1])
+                analize.fft_plot(xf_gen, yf_gen, "generated", start=20, color='g',x= self.cros_yourBag3[level1][1][0],corr= self.cros_yourBag3[level1][1][1])
 
-            x = self.cros_yourBag2[level][0]
-            #print(x)
-            corr = self.cros_yourBag2[level][1]
-            #print(corr)
-            analize.fft_plot(xf_orig, yf_orig, "original", start=20, color='b',x= self.cros_yourBag2['I'][0],corr= self.cros_yourBag2[self.words[ind]][1])
-            analize.fft_plot(xf_gen, yf_gen, "generated", start=20, color='g',x= self.cros_yourBag2['I'][0],corr= self.cros_yourBag2[self.words[ind]][1])
-
-            plt.show()
+                plt.show()
 
     def textfun(self,text):
 
