@@ -10,30 +10,17 @@ import IPython.display as ipd
 import holoviews as hv
 import soundfile as sf
 import speech_recognition as sr
+
+# import umap
 import librosa
-# import librosa
-# from scipy.io.wavfile import write, read
 # import mplcursors
-# from librosa.display import specshow
 # from  scipy.signal import spectrogram
-
-
-indexs_gen = [
-    (1500, 4000),   # 'I'
-    (4000, 6000),   # 'did'
-    (6000, 9000),   # 'not'
-    (7000, 18000),  # 'steal'
-    (18000, 21000), # your'
-    (21000, 28000)  # 'bag'
-
-]
+# from scipy.io.wavfile import write, read
 
 
 
-def audioSpliter(signal, sampling_rate, type, rms_thresh=0.03): # rms_thresh = 0.3? 0.1?
-
+def rms_calculate(signal, sampling_rate, rms_thresh=0.03):
     chunk = int(0.016 * sampling_rate) # 16 ms (700/sampling_rate)*1000 - need to be 100-200 samples
-    silence_thresh = int(0.085 * sampling_rate) # 33 ms
 
     # Normalization Audio:
     signal = signal/signal.max()
@@ -42,6 +29,27 @@ def audioSpliter(signal, sampling_rate, type, rms_thresh=0.03): # rms_thresh = 0
     rms = []
     for i in range(0, 210000):
         rms.append(np.sqrt(np.mean(signal[i:i+chunk]**2)))
+    return rms
+
+def rms_plot(rms, thresh = 0.03):
+    plt.figure(figsize=(20,4))
+    plt.xticks(np.arange(0, len(rms), step=10000))
+    plt.plot(rms)
+    plt.axhline(y=thresh, color='r', linestyle='-')
+    plt.title("RMS")
+    plt.show()
+
+
+def audioSpliter(signal, sampling_rate, type, rms_thresh=0.03): # rms_thresh = 0.3? 0.1?
+
+
+    silence_thresh = int(0.085 * sampling_rate) # 33 ms
+
+    # Normalization Audio:
+    signal = signal/signal.max()
+
+    # calculate rms:
+    rms = rms_calculate(signal, sampling_rate, rms_thresh)
 
     if type == "orig":
         # find the start&end indexs for each word:
@@ -62,8 +70,13 @@ def audioSpliter(signal, sampling_rate, type, rms_thresh=0.03): # rms_thresh = 0
                     end = i
                     indexs.append((start, end))
                     silence = 0
-    else:
-        indexs = indexs_gen
+
+    elif type == "hila":
+        indexs = indexs_gen_hila
+    elif type == "nofar":
+        indexs = indexs_gen_nofar
+    elif type == "hello":
+        indexs = indexs_gen_hello
 
     return indexs
 
@@ -78,10 +91,8 @@ def STT(path):
             word = r.recognize_google(audio_listened)
             text += word
         except sr.UnknownValueError as e:
-            text += "error"
+            text += error
     return text.split(' ')
-
-
 
 
 
@@ -118,7 +129,7 @@ def bolds_fft(words, signal_org, signal_gen, indexs_org, indexs_gen, new_len):
         word_gen = signal_gen[indexs_gen[i][0]: indexs_gen[i][1]]
 
         if word_orig.shape[0] > new_len or word_gen.shape[0] > new_len:
-            print(word_orig.shape[0], word_gen.shape[0])
+            print("----- error----", word_orig.shape[0], word_gen.shape[0])
 
         # fft + interpulation:
         xf_orig, yf_orig = fft_calculate(word_orig, 16000, 10, new_len)
@@ -153,18 +164,70 @@ def fft_plot(xf, yf, title, start=20, color='r',x=[], corr=[]):
     plt.xticks(np.arange(-250, 300, 50))
     plt.grid()
 
-def cros_cor_plot(x, corr):
-    plt.plot(x, corr)
-    plt.xticks(np.arange(-250, 300, 50))
-    plt.grid()
-    #plt.show()
 
-def get_val():
-    path_yourBag2 = 'STT/yourBag3.wav'
-    signal_yourBag2, sampling_rate_yourBag2 = librosa.load(path_yourBag2, sr=16000)
-    path_gen = 'STT/generated_.wav'
-    signal_gen, sampling_rate_gen = librosa.load(path_gen, sr=16000)
-    words = STT(path_yourBag2)
-    indexs_yourBag2 = audioSpliter(signal_yourBag2, 16000, 'orig')
-    indexs_gen2 = audioSpliter(signal_gen, 16000, 'gen')
-    return words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2
+def get_val_H():
+    path_yourBag = 'STT/_yourBag.wav'
+    signal_yourBag, sampling_rate = librosa.load(path_yourBag, sr=16000)
+    path_gen = 'STT/_generated_yourBag.wav'
+    signal_gen, sampling_rate= librosa.load(path_gen, sr=16000)
+    words = STT(path_yourBag)
+    rms=rms_calculate(signal_yourBag, 16000)
+    #rms_plot(rms)
+    indexs_yourBag = audioSpliter(signal_yourBag, 16000, 'orig')
+    indexs_gen = audioSpliter(signal_gen, 16000, 'hila')
+    return words, signal_yourBag, signal_gen, indexs_yourBag, indexs_gen
+
+def get_val_N():
+    path_steal = 'STT/_steal.wav'
+    signal_steal, sampling_rate = librosa.load(path_steal, sr=16000)
+    path_gen_N = 'STT/_steal_generated.wav'
+    signal_gen_N, sampling_rate= librosa.load(path_gen_N, sr=16000)
+    words = STT(path_steal)
+    rms=rms_calculate(signal_steal, 16000)
+    #rms_plot(rms)
+    indexs_steal = audioSpliter(signal_steal, 16000, 'orig')
+    indexs_gen_N = audioSpliter(signal_gen_N, 16000, 'nofar')
+    return words, signal_steal, signal_gen_N, indexs_steal, indexs_gen_N
+
+def get_val_Hallo():
+    path_hello= 'STT/_hello.wav'
+    signal_hello, sampling_rate = librosa.load(path_hello, sr=16000)
+    path_gen_hello = 'STT/_hello_generated.wav'
+    signal_gen_hello, sampling_rate= librosa.load(path_gen_hello, sr=16000)
+    signal_gen_hello=signal_gen_hello[7000:len(signal_gen_hello)]
+    words = STT(path_hello)
+    rms=rms_calculate(signal_hello, 1600)
+    #rms_plot(rms)
+    indexs_hello = audioSpliter(signal_hello, 16000, 'orig')
+    indexs_gen_hello = audioSpliter(signal_gen_hello, 16000, 'hello')
+    return words, signal_hello, signal_gen_hello, indexs_hello, indexs_gen_hello
+
+indexs_gen_hila = [
+    (1500, 4000),   # 'I'
+    (4000, 6000),   # 'did'
+    (6000, 9000),   # 'not'
+    (7000, 18000),  # 'steal'
+    (18000, 21000), # your'
+    (21000, 28000)  # 'bag'
+
+]
+
+indexs_gen_nofar = [
+    (1500, 4600),   # 'I'
+    (4300, 7000),   # 'did'
+    (7000, 13000),  # 'not'
+    (14000,18000),  #steal
+    (18000, 22000), #your
+    (22000, 31200) # yourBag
+
+]
+
+indexs_gen_hello = [
+    (0, 8000),     # 'Hello'
+    (8000, 11000),   # 'this'
+    (12000, 13500),  # 'is'
+    (13500, 17000),  # 'our'
+    (17000, 23000),  # 'final'
+    (23000, 30440) # 'project'
+
+]
