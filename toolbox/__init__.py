@@ -85,15 +85,15 @@ class Toolbox:
         #self.ui.speaker_box.currentIndexChanged.connect(random_func(2))
 
         # Model selection
-        #self.ui.encoder_box.currentIndexChanged.connect(self.init_encoder)
+        self.ui.encoder_box.currentIndexChanged.connect(self.init_encoder)
         def func():
             self.synthesizer = None
-        #self.ui.synthesizer_box.currentIndexChanged.connect(func)
-        #self.ui.vocoder_box.currentIndexChanged.connect(self.init_vocoder)
+        self.ui.synthesizer_box.currentIndexChanged.connect(func)
+        self.ui.vocoder_box.currentIndexChanged.connect(self.init_vocoder)
 
         # Utterance selection
-        #func = lambda: self.load_from_browser(self.ui.browse_file())
-        #self.ui.browser_browse_button.clicked.connect(func)
+        func = lambda: self.load_from_browser(self.ui.browse_file()) #=====
+        self.ui.browser_browse_button.clicked.connect(func) #=====
         func = lambda: self.load_from_browser1(self.ui.browse_file1())
         self.ui.browser_browse_button1.clicked.connect(func)
         func = lambda: self.ui.draw_utterance(self.ui.selected_utterance, "current")
@@ -272,7 +272,8 @@ class Toolbox:
         if self.synthesizer is None or seed is not None:
             self.init_synthesizer()
 
-        texts = self.ui.text_prompt.toPlainText().split("\n")
+        #texts = self.ui.text_prompt.toPlainText().split("\n")
+        texts = " "
         embed = self.ui.selected_utterance.embed
         embeds = [embed] * len(texts)
         specs = self.synthesizer.synthesize_spectrograms(texts, embeds)
