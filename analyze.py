@@ -37,7 +37,7 @@ def rms_plot(rms, thresh = 0.03):
     plt.plot(rms)
     plt.axhline(y=thresh, color='r', linestyle='-')
     plt.title("RMS")
-    plt.show()
+    #plt.show()
 
 
 def audioSpliter(signal, sampling_rate, type, rms_thresh=0.03): # rms_thresh = 0.3? 0.1?
@@ -152,21 +152,23 @@ def bolds_fft(words, signal_org, signal_gen, indexs_org, indexs_gen, new_len):
 
 
 
-def fft_plot(xf, yf, title, start=20, color='r',x=[], corr=[]):
+def fftAndCross_plot(xf, yf, title, start=20, color='r',x=[], corr=[]):
     N_normal = yf.shape[0]
     plt.subplot(1, 2, 1)
     plt.plot(xf[start:N_normal], np.abs(yf)[start:N_normal], color, label=title)
     plt.grid()
     plt.legend()
+    plt.title("FFT")
 
     plt.subplot(1, 2, 2)
     plt.plot(x, corr)
     plt.xticks(np.arange(-250, 300, 50))
     plt.grid()
+    plt.title("Cross-Correlation")
 
 
 def get_val_H():
-    path_yourBag = 'STT/_yourBag.wav'
+    path_yourBag = 'records/_yourBag.wav'
     signal_yourBag, sampling_rate = librosa.load(path_yourBag, sr=16000)
     path_gen = 'STT/_generated_yourBag.wav'
     signal_gen, sampling_rate= librosa.load(path_gen, sr=16000)
@@ -178,7 +180,7 @@ def get_val_H():
     return words, signal_yourBag, signal_gen, indexs_yourBag, indexs_gen
 
 def get_val_N():
-    path_steal = 'STT/_steal.wav'
+    path_steal = 'records/_steal.wav'
     signal_steal, sampling_rate = librosa.load(path_steal, sr=16000)
     path_gen_N = 'STT/_steal_generated.wav'
     signal_gen_N, sampling_rate= librosa.load(path_gen_N, sr=16000)
@@ -190,7 +192,7 @@ def get_val_N():
     return words, signal_steal, signal_gen_N, indexs_steal, indexs_gen_N
 
 def get_val_Hallo():
-    path_hello= 'STT/_hello.wav'
+    path_hello= 'records/_hello.wav'
     signal_hello, sampling_rate = librosa.load(path_hello, sr=16000)
     path_gen_hello = 'STT/_hello_generated.wav'
     signal_gen_hello, sampling_rate= librosa.load(path_gen_hello, sr=16000)
