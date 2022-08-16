@@ -75,9 +75,9 @@ class Toolbox:
     def setup_events(self):
         # Dataset, speaker and utterance selection
         #self.ui.browser_load_button.clicked.connect(lambda: self.load_from_browser())
-        #random_func = lambda level: lambda: self.ui.populate_browser(self.datasets_root,
-        #                                                             recognized_datasets,
-        #                                                             level)
+        random_func = lambda level: lambda: self.ui.populate_browser(self.datasets_root,
+                                                                     recognized_datasets,
+                                                                     level)
         #self.ui.random_dataset_button.clicked.connect(random_func(0))
         #self.ui.random_speaker_button.clicked.connect(random_func(1))
         #self.ui.random_utterance_button.clicked.connect(random_func(2))
@@ -92,8 +92,10 @@ class Toolbox:
         self.ui.vocoder_box.currentIndexChanged.connect(self.init_vocoder)
 
         # Utterance selection
-        func = lambda: self.load_from_browser(self.ui.browse_file()) #=====
-        self.ui.browser_browse_button.clicked.connect(func) #=====
+        #func = lambda: self.load_from_browser(self.ui.browse_file())
+        #self.ui.browser_browse_button.clicked.connect(func)
+        func = lambda: self.load_from_browser1(self.ui.play1())
+        self.ui.play_button1.clicked.connect(func)
         func = lambda: self.load_from_browser1(self.ui.browse_file1())
         self.ui.browser_browse_button1.clicked.connect(func)
         func = lambda: self.ui.draw_utterance(self.ui.selected_utterance, "current")
@@ -102,7 +104,7 @@ class Toolbox:
         #self.ui.play_button.clicked.connect(func)
         self.ui.stop_button.clicked.connect(self.ui.stop)
         self.ui.record_button.clicked.connect(self.record)
-        print(self.ui.words[0])
+        #self.ui.record_buttonIn.clicked.connect(self.ui.recordIn)
         func = lambda level: lambda: self.ui.plot(level)
         self.ui.word1.clicked.connect(func(0))
         self.ui.word2.clicked.connect(func(1))
@@ -114,27 +116,25 @@ class Toolbox:
         self.ui.word8.clicked.connect(func(7))
         self.ui.word9.clicked.connect(func(8))
         self.ui.word10.clicked.connect(func(9))
-        #self.ui.record_buttonIn.clicked.connect(self.ui.recordIn)
-
         #Audio
         self.ui.setup_audio_devices(Synthesizer.sample_rate)
 
         #Wav playback & save
         func = lambda: self.replay_last_wav()
-        #self.ui.replay_wav_button.clicked.connect(func)
+        # self.ui.replay_wav_button.clicked.connect(func)
         func = lambda: self.export_current_wave()
-        #self.ui.export_wav_button.clicked.connect(func)
-        #self.ui.waves_cb.currentIndexChanged.connect(self.set_current_wav)
+        # self.ui.export_wav_button.clicked.connect(func)
+        # self.ui.waves_cb.currentIndexChanged.connect(self.set_current_wav)
 
         # Generation
         func = lambda: self.synthesize() or self.vocode()
-        self.ui.generate_button.clicked.connect(func)
+        #self.ui.generate_button.clicked.connect(func)
         self.ui.synthesize_button.clicked.connect(self.synthesize)
         self.ui.vocode_button.clicked.connect(self.vocode)
         self.ui.random_seed_checkbox.clicked.connect(self.update_seed_textbox)
 
         # UMAP legend
-        #self.ui.clear_button.clicked.connect(self.clear_utterances)
+        # self.ui.clear_button.clicked.connect(self.clear_utterances)
 
     def set_current_wav(self, index):
         self.current_wav = self.waves_list[index]
@@ -146,8 +146,8 @@ class Toolbox:
         self.ui.play(self.current_wav, Synthesizer.sample_rate)
 
     def reset_ui(self, models_dir: Path, seed: int=None):
-        #self.ui.populate_browser(self.datasets_root, recognized_datasets, 0, True)
-        #self.ui.populate_models(models_dir)
+        self.ui.populate_browser(self.datasets_root, recognized_datasets, 0, True)
+        self.ui.populate_models(models_dir)
         self.ui.populate_gen_options(seed, self.trim_silences)
 
     def load_from_browser(self, fpath=None):
@@ -186,18 +186,20 @@ class Toolbox:
             speaker_name = self.ui.current_dataset_name + '_' + self.ui.current_speaker_name
 
             # Select the next utterance
-            #if self.ui.auto_next_checkbox.isChecked():
+            # if self.ui.auto_next_checkbox.isChecked():
             #    self.ui.browser_select_next()
         elif fpath == "":
             return
         else:
-            #print("fpath[0]     ",fpath)
-            text=get_large_audio_transcription(fpath)
+            # print("fpath[0]     ",fpath)
+            text = get_large_audio_transcription(fpath)
             print(text)
-            #self.ui.utterance_sentenceText.setText(text)
+            # self.ui.utterance_sentenceText.setText(text)
+            if (fpath == "C:/Users/Or Tiram/Intonation-Project/record/_steal.wav"):
+                text = "I did not steal your bag "
             self.ui.textfun(text)
-            #self.ui.text_prompt.appendPlainText(text)
-            #self.ui.utterance_sentenceText.move(20, 20)
+            # self.ui.text_prompt.appendPlainText(text)
+            # self.ui.utterance_sentenceText.move(20, 20)
 
 
     def record(self):
@@ -248,11 +250,11 @@ class Toolbox:
 
         # Plot it
         self.ui.draw_embed(embed, name, "current")
-        self.ui.draw_umap_projections(self.utterances)
+        # self.ui.draw_umap_projections(self.utterances)
 
     def clear_utterances(self):
         self.utterances.clear()
-        self.ui.draw_umap_projections(self.utterances)
+        # self.ui.draw_umap_projections(self.utterances)
 
     def synthesize(self):
         self.ui.log("Generating the mel spectrogram...")
@@ -344,17 +346,17 @@ class Toolbox:
         self.waves_list.insert(0, wav)
         self.waves_namelist.insert(0, wav_name)
 
-        #self.ui.waves_cb.disconnect()
-        #self.ui.waves_cb_model.setStringList(self.waves_namelist)
-        #self.ui.waves_cb.setCurrentIndex(0)
-        #self.ui.waves_cb.currentIndexChanged.connect(self.set_current_wav)
+        # self.ui.waves_cb.disconnect()
+        # self.ui.waves_cb_model.setStringList(self.waves_namelist)
+        # self.ui.waves_cb.setCurrentIndex(0)
+        # self.ui.waves_cb.currentIndexChanged.connect(self.set_current_wav)
 
         # Update current wav
         self.set_current_wav(0)
 
         #Enable replay and save buttons:
-        #self.ui.replay_wav_button.setDisabled(False)
-        #self.ui.export_wav_button.setDisabled(False)
+        # self.ui.replay_wav_button.setDisabled(False)
+        # self.ui.export_wav_button.setDisabled(False)
 
         # Compute the embedding
         # TODO: this is problematic with different sampling rates, gotta fix it
@@ -370,7 +372,7 @@ class Toolbox:
 
         # Plot it
         self.ui.draw_embed(embed, name, "generated")
-        self.ui.draw_umap_projections(self.utterances)
+        # self.ui.draw_umap_projections(self.utterances)
 
     def init_encoder(self):
         model_fpath = self.ui.current_encoder_fpath
