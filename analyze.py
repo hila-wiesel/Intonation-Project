@@ -32,7 +32,8 @@ def rms_calculate(signal, sampling_rate, rms_thresh=0.03):
     return rms
 
 def rms_plot(rms, thresh = 0.03):
-    plt.figure(figsize=(20,4))
+    plt.ion()
+    plt.figure(figsize=(10,4))
     plt.xticks(np.arange(0, len(rms), step=10000))
     plt.plot(rms)
     plt.axhline(y=thresh, color='r', linestyle='-')
@@ -153,6 +154,7 @@ def bolds_fft(words, signal_org, signal_gen, indexs_org, indexs_gen, new_len):
 
 
 def fftAndCross_plot(xf, yf, title, start=20, color='r',x=[], corr=[]):
+    plt.ion()
     N_normal = yf.shape[0]
     plt.subplot(1, 2, 1)
     plt.plot(xf[start:N_normal], np.abs(yf)[start:N_normal], color, label=title)
@@ -165,6 +167,7 @@ def fftAndCross_plot(xf, yf, title, start=20, color='r',x=[], corr=[]):
     plt.xticks(np.arange(-250, 300, 50))
     plt.grid()
     plt.title("Cross-Correlation")
+    plt.show()
 
 
 def get_val_H():
@@ -233,3 +236,4 @@ indexs_gen_hello = [
     (23000, 30440) # 'project'
 
 ]
+
