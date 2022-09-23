@@ -34,9 +34,9 @@ import numpy as np
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QWidget, QPlainTextEdit, QVBoxLayout
 from STT.main import get_large_audio_transcription
-from analize import *
+from analyze import *
 import simpleaudio as sa
-import analize
+import analyze
 filterwarnings("ignore")
 
 
@@ -71,7 +71,7 @@ class UI(QDialog):
     #fft_yourBag2={}
     #cros_yourBag2={}
     words=["","","","","","","","","",""]
-    thewords, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analize.get_val_H()
+    thewords, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analyze.get_val_H()
     main_path=""
     for i in range(len(thewords)):
         words.insert(i , thewords[i])
@@ -353,7 +353,7 @@ class UI(QDialog):
         signal = []
         if (fpath[0] == "/Users/dinamaizlis/Desktop/Intonation-Project/records/_yourBag.wav"):
             self.words = ["", "", "", "", "", "", "", "", "", ""]
-            thewords, signal_yourBag, signal_gen, indexs_yourBag, indexs_gen = analize.get_val_H()
+            thewords, signal_yourBag, signal_gen, indexs_yourBag, indexs_gen = analyze.get_val_H()
             print("thewords    ", thewords)
             for i in range(len(thewords)):
                 self.words.insert(i, thewords[i])
@@ -364,7 +364,7 @@ class UI(QDialog):
 
         if (fpath[0] == "/Users/dinamaizlis/Desktop/Intonation-Project/records/_steal.wav"):
             self.words = ["", "", "", "", "", "", "", "", "", ""]
-            thewords, signal_steal, signal_gen_N, indexs_steal, indexs_gen_N = analize.get_val_N()
+            thewords, signal_steal, signal_gen_N, indexs_steal, indexs_gen_N = analyze.get_val_N()
             thewords = ["I", "did", "not", "steal", "your", "bag"]
             for i in range(len(thewords)):
                 self.words.insert(i, thewords[i])
@@ -377,7 +377,7 @@ class UI(QDialog):
 
         if (fpath[0] == "/Users/dinamaizlis/Desktop/Intonation-Project/records/_hello.wav"):
             self.words = ["", "", "", "", "", "", "", "", "", ""]
-            thewords, signal_hello, signal_gen_hello, indexs_hello, indexs_gen_hello = analize.get_val_Hallo()
+            thewords, signal_hello, signal_gen_hello, indexs_hello, indexs_gen_hello = analyze.get_val_Hallo()
             for i in range(len(thewords)):
                 self.words.insert(i, thewords[i])
             print(self.words)
@@ -393,7 +393,7 @@ class UI(QDialog):
         #plt.plot(rms)
         #plt.axhline(y=0.03, color='r', linestyle='-')
         #plt.title("RMS")
-        #analize.rms_plot(rms)
+        #analyze.rms_plot(rms)
         # self.wav_graph()
         return fpath[0]
 
@@ -913,7 +913,7 @@ class UI(QDialog):
         self.textboxValue = self.utterance_historyText.text()
 
     def rms1(self):
-        analize.rms_plot(self.rms)
+        analyze.rms_plot(self.rms)
         plt.show()
 
     def start(self):
@@ -921,7 +921,7 @@ class UI(QDialog):
 
     def plot(self,level1):
         #plt.ion()
-        #words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analize.get_val()
+        #words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analyze.get_val()
         #print(words)
         #bold_yourBag2, fft_yourBag2, cros_yourBag2 = bolds_fft(words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2, 30000)
         #fig, axs = plt.subplots(2, 1)
@@ -946,8 +946,8 @@ class UI(QDialog):
                 #print(x)
                 corr = self.cros_yourBag3[level1][1][1]
                 #print(corr)
-                analize.fftAndCross_plot(xf_orig, yf_orig, "original", start=20, color='b',x= self.cros_yourBag3[level1][1][0],corr= self.cros_yourBag3[level1][1][1])
-                analize.fftAndCross_plot(xf_gen, yf_gen, "generated", start=20, color='g',x= self.cros_yourBag3[level1][1][0],corr= self.cros_yourBag3[level1][1][1])
+                analyze.fftAndCross_plot(xf_orig, yf_orig, "original", start=20, color='b',x= self.cros_yourBag3[level1][1][0],corr= self.cros_yourBag3[level1][1][1])
+                analyze.fftAndCross_plot(xf_gen, yf_gen, "generated", start=20, color='g',x= self.cros_yourBag3[level1][1][0],corr= self.cros_yourBag3[level1][1][1])
 
                 #plt.show()
 
