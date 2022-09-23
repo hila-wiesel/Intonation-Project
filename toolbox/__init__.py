@@ -1,4 +1,4 @@
-mport sys
+import sys
 import wave
 from pathlib import Path
 from time import sleep
