@@ -36,7 +36,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPlainTextEdit, QVBoxLayout
 from STT.main import get_large_audio_transcription
 from analize import *
 import simpleaudio as sa
-import analize
+import analyze
 filterwarnings("ignore")
 
 
