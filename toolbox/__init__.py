@@ -34,7 +34,7 @@ import numpy as np
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QWidget, QPlainTextEdit, QVBoxLayout
 from STT.main import get_large_audio_transcription
-from aanalyze import *
+from analyze import *
 import simpleaudio as sa
 import analyze
 filterwarnings("ignore")
