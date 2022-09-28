@@ -21,9 +21,9 @@ import librosa
 
 def rms_calculate(signal, sampling_rate, rms_thresh=0.03):
     chunk = int(0.016 * sampling_rate) # 16 ms (700/sampling_rate)*1000 - need to be 100-200 samples
-
+    print("signal   ",signal)
     # Normalization Audio:
-    signal = signal/signal.max()
+    #signal = signal/signal.max()
 
     # calculate rms:
     rms = []
@@ -180,7 +180,7 @@ def get_val_H():
     #rms_plot(rms)
     indexs_yourBag = audioSpliter(signal_yourBag, 16000, 'orig')
     indexs_gen = audioSpliter(signal_gen, 16000, 'hila')
-    return words, signal_yourBag, signal_gen, indexs_yourBag, indexs_gen
+    return words, signal_yourBag, signal_gen, indexs_yourBag, indexs_gen,rms
 
 def get_val_N():
     path_steal = 'records/_steal.wav'
@@ -192,7 +192,7 @@ def get_val_N():
     #rms_plot(rms)
     indexs_steal = audioSpliter(signal_steal, 16000, 'orig')
     indexs_gen_N = audioSpliter(signal_gen_N, 16000, 'nofar')
-    return words, signal_steal, signal_gen_N, indexs_steal, indexs_gen_N
+    return words, signal_steal, signal_gen_N, indexs_steal, indexs_gen_N ,rms
 
 def get_val_Hallo():
     path_hello= 'records/_hello.wav'
@@ -205,7 +205,7 @@ def get_val_Hallo():
     #rms_plot(rms)
     indexs_hello = audioSpliter(signal_hello, 16000, 'orig')
     indexs_gen_hello = audioSpliter(signal_gen_hello, 16000, 'hello')
-    return words, signal_hello, signal_gen_hello, indexs_hello, indexs_gen_hello
+    return words, signal_hello, signal_gen_hello, indexs_hello, indexs_gen_hello,rms
 
 indexs_gen_hila = [
     (1500, 4000),   # 'I'
