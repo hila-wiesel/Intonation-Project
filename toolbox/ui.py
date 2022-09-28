@@ -71,7 +71,7 @@ class UI(QDialog):
     #fft_yourBag2={}
     #cros_yourBag2={}
     words=["","","","","","","","","",""]
-    thewords, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analyze.get_val_H()
+    thewords, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2, rms= analyze.get_val_H()
     main_path=""
     for i in range(len(thewords)):
         words.insert(i , thewords[i])
@@ -118,46 +118,6 @@ class UI(QDialog):
         spec_ax.figure.canvas.draw()
         if which != "current":
             self.vocode_button.setDisabled(spec is None)
-
-    # def draw_umap_projections(self, utterances: Set[Utterance]):
-    #     self.umap_ax.clear()
-    #
-    #     speakers = np.unique([u.speaker_name for u in utterances])
-    #     colors = {speaker_name: colormap[i] for i, speaker_name in enumerate(speakers)}
-    #     embeds = [u.embed for u in utterances]
-    #
-    #     # Display a message if there aren't enough points
-    #     if len(utterances) < self.min_umap_points:
-    #         self.umap_ax.text(.5, .5, "Add %d more points to\ngenerate the projections" %
-    #                           (self.min_umap_points - len(utterances)),
-    #                           horizontalalignment='center', fontsize=15)
-    #         self.umap_ax.set_title("")
-    #
-    #     # Compute the projections
-    #     else:
-    #         if not self.umap_hot:
-    #             self.log(
-    #                 "Drawing UMAP projections for the first time, this will take a few seconds.")
-    #             self.umap_hot = True
-    #
-    #         reducer = umap.UMAP(int(np.ceil(np.sqrt(len(embeds)))), metric="cosine")
-    #         projections = reducer.fit_transform(embeds)
-    #
-    #         speakers_done = set()
-    #         for projection, utterance in zip(projections, utterances):
-    #             color = colors[utterance.speaker_name]
-    #             mark = "x" if "_gen_" in utterance.name else "o"
-    #             label = None if utterance.speaker_name in speakers_done else utterance.speaker_name
-    #             speakers_done.add(utterance.speaker_name)
-    #             self.umap_ax.scatter(projection[0], projection[1], c=[color], marker=mark,
-    #                                  label=label)
-    #         self.umap_ax.legend(prop={'size': 10})
-    #
-    #     # Draw the plot
-    #     self.umap_ax.set_aspect("equal", "datalim")
-    #     self.umap_ax.set_xticks([])
-    #     self.umap_ax.set_yticks([])
-    #     self.umap_ax.figure.canvas.draw()
 
     def save_audio_file(self, wav, sample_rate):
         dialog = QFileDialog()
@@ -351,9 +311,13 @@ class UI(QDialog):
 
 
         signal = []
-        if (fpath[0] == "/Users/dinamaizlis/Desktop/Intonation-Project/records/_yourBag.wav"):
+        #print("fpath[0]    ",fpath[0])
+        #print("fpath[0].contains(_yourBag)  ",fpath[0].contains("_yourBag"))
+        #print("fpath[0].contains(_steal)  ",fpath[0].contains("_steal"))
+        #print("fpath[0].contains(_hello)  ",fpath[0].contains("_hello"))
+        if ("_yourBag" in fpath[0]):
             self.words = ["", "", "", "", "", "", "", "", "", ""]
-            thewords, signal_yourBag, signal_gen, indexs_yourBag, indexs_gen = analyze.get_val_H()
+            thewords, signal_yourBag, signal_gen, indexs_yourBag, indexs_gen,self.rms = analyze.get_val_H()
             print("thewords    ", thewords)
             for i in range(len(thewords)):
                 self.words.insert(i, thewords[i])
@@ -362,9 +326,9 @@ class UI(QDialog):
                                                                                   indexs_yourBag, indexs_gen, 30000)
             signal = signal_yourBag
 
-        if (fpath[0] == "/Users/dinamaizlis/Desktop/Intonation-Project/records/_steal.wav"):
+        if ("_steal" in fpath[0]):
             self.words = ["", "", "", "", "", "", "", "", "", ""]
-            thewords, signal_steal, signal_gen_N, indexs_steal, indexs_gen_N = analyze.get_val_N()
+            thewords, signal_steal, signal_gen_N, indexs_steal, indexs_gen_N ,self.rms= analyze.get_val_N()
             thewords = ["I", "did", "not", "steal", "your", "bag"]
             for i in range(len(thewords)):
                 self.words.insert(i, thewords[i])
@@ -375,9 +339,9 @@ class UI(QDialog):
             print(self.bold_yourBag2)
             signal = signal_steal
 
-        if (fpath[0] == "/Users/dinamaizlis/Desktop/Intonation-Project/records/_hello.wav"):
+        if ("_hello" in fpath[0]):
             self.words = ["", "", "", "", "", "", "", "", "", ""]
-            thewords, signal_hello, signal_gen_hello, indexs_hello, indexs_gen_hello = analyze.get_val_Hallo()
+            thewords, signal_hello, signal_gen_hello, indexs_hello, indexs_gen_hello ,self.rms = analyze.get_val_Hallo()
             for i in range(len(thewords)):
                 self.words.insert(i, thewords[i])
             print(self.words)
@@ -386,7 +350,7 @@ class UI(QDialog):
                                                                                   indexs_gen_hello, 72000)
             signal = signal_hello
 
-        self.rms = rms_calculate(signal, 1600)
+        #self.rms = rms_calculate(signal, 1600)
         #rms = rms_calculate(signal, 1600)
         #plt.figure(figsize=(10,4))
         #plt.xticks(np.arange(0, len(rms), step=10000))
