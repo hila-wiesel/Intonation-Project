@@ -195,10 +195,11 @@ class Toolbox:
         else:
             # print("fpath[0]     ",fpath)
             text = get_large_audio_transcription(fpath)
-            print(text)
+
             # self.ui.utterance_sentenceText.setText(text)
-            if (fpath == "/Users/dinamaizlis/Desktop/Intonation-Project/records/_steal.wav"):
+            if ("_steal.wav" in fpath):
                 text = "I did not still your bag "
+            print(text)
             self.ui.textfun(text)
             # self.ui.text_prompt.appendPlainText(text)
             # self.ui.utterance_sentenceText.move(20, 20)
