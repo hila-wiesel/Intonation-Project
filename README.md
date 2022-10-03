@@ -42,7 +42,8 @@ Output: Analysis of the sentence meaning of the first audio
 1. Python 3.7 is recommended.
 2. Install [ffmpeg](https://ffmpeg.org/download.html#get-packages). This is necessary for reading audio files.
 3. Install [PyTorch](https://pytorch.org/get-started/locally/). Pick the latest stable version, your operating system, your package manager (pip by default) and finally pick any of the proposed CUDA versions if you have a GPU, otherwise pick CPU. Run the given command.
-4. Install the remaining requirements with `pip install -r requirements.txt`
+4. run this pip install (pip==22.2.2) on cmd: python.exe -m pip install --upgrade pip 
+5. Install the remaining requirements with `pip install -r requirements.txt`
 
 
 ### 2. (Optional) Download Pretrained Models
