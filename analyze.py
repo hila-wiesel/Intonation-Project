@@ -6,7 +6,7 @@ from scipy.interpolate import interp1d
 import panel as pn
 import sounddevice as sd
 import math
-import IPython.display as ipd
+#import IPython.display as ipd
 import holoviews as hv
 import soundfile as sf
 import speech_recognition as sr
