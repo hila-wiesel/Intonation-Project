@@ -3,14 +3,14 @@
 There are sentences that have several meanings, depending on how the sentence is said, Which word is stressed.
 
 For example:
-The sentence "I did not still the bag from you" can be interpreted in several ways, depending on the word that the speaker emphasizes (underlined):
+The sentence "I did not steal your bag" can be interpreted in several ways, depending on the word that the speaker emphasizes (underlined):
 
-**1.** "I did not  **still** the bag from you" - I did not steal the bag, I may have taken or asked.
+**1.** "I did not  '*steal*' your bag" - I did not steal the bag, I may have taken or asked.
 The emphasis is on the act of stealing, which the speaker wants to deny.
 
-**2.** "I did not still **the bag** from you" - I did not steal the bag, it is possible that I stole something else from you. The emphasis is on the stolen object, the speaker wants to deny that the stolen object is a bag.
+**2.** "I did not steal your '*bag*'" - I did not steal the bag, it is possible that I stole something else from you. The emphasis is on the stolen object, the speaker wants to deny that the stolen object is a bag.
 
-**3.** "I did not still the bag **from you**" - I did not steal from you. The negation is about who the bag was stolen from. The speaker wants to rule out that the bag was stolen from you (it may have been stolen by me, from someone else).
+**3.** "I did not steal '*your*' bag" - I did not steal from you. The negation is about who the bag was stolen from. The speaker wants to rule out that the bag was stolen from you (it may have been stolen by me, from someone else).
 
 Humans distinguish between the change in meaning naturally, but it is difficult to point to a certain legality that determines the difference.
 
@@ -58,5 +58,9 @@ You can then try the toolbox:
 ### ToolBox explanation - youtube video
 [<img src="https://github.com/hila-wiesel/Intonation-Project/blob/cc40b4cef2157d56648dbfa53d390de61b96c715/pictures/Image%20for%20video.png" width="50%">](https://youtu.be/yHDc6edlLYs "Now in Android: 55")
 
+### Examples of the following sentences:
 
+#### 1) I did not steal '*your*' bag - https://www.youtube.com/watch?v=27MNsmxJVmM
+#### 2) I did not '*steal*' your bag - https://www.youtube.com/watch?v=MIWeyB04Ypw
+#### 3) '*Hello*' this is our finel project - https://www.youtube.com/watch?v=llTLtwpRdB4
 
