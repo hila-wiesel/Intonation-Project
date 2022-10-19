@@ -116,8 +116,8 @@ class UI(QDialog):
         spec_ax.set_xticks([])
         spec_ax.set_yticks([])
         spec_ax.figure.canvas.draw()
-        if which != "current":
-            self.vocode_button.setDisabled(spec is None)
+        # if which != "current":
+        #     self.vocode_button.setDisabled(spec is None)
 
     def save_audio_file(self, wav, sample_rate):
         dialog = QFileDialog()
@@ -476,7 +476,7 @@ class UI(QDialog):
 
         #self.play_button.setDisabled(False)
         #self.generate_button.setDisabled(False)
-        self.synthesize_button.setDisabled(False)
+        # self.synthesize_button.setDisabled(False)
 
     def log(self, line, mode="newline"):
         if mode == "newline":
@@ -493,30 +493,30 @@ class UI(QDialog):
         self.app.processEvents()
 
     def set_loading(self, value, maximum=1):
-        self.loading_bar.setValue(value * 100)
-        self.loading_bar.setMaximum(maximum * 100)
-        self.loading_bar.setTextVisible(value != 0)
+        # self.loading_bar.setValue(value * 100)
+        # self.loading_bar.setMaximum(maximum * 100)
+        # self.loading_bar.setTextVisible(value != 0)
         self.app.processEvents()
 
     def populate_gen_options(self, seed, trim_silences):
         if seed is not None:
-            self.random_seed_checkbox.setChecked(True)
+            # self.random_seed_checkbox.setChecked(True)
             self.seed_textbox.setText(str(seed))
             self.seed_textbox.setEnabled(True)
         else:
-            self.random_seed_checkbox.setChecked(False)
+            # self.random_seed_checkbox.setChecked(False)
             self.seed_textbox.setText(str(0))
             self.seed_textbox.setEnabled(False)
 
-        if not trim_silences:
-            self.trim_silences_checkbox.setChecked(False)
-            self.trim_silences_checkbox.setDisabled(True)
+        # if not trim_silences:
+        #     self.trim_silences_checkbox.setChecked(False)
+        #     self.trim_silences_checkbox.setDisabled(True)
 
-    def update_seed_textbox(self):
-        if self.random_seed_checkbox.isChecked():
-            self.seed_textbox.setEnabled(True)
-        else:
-            self.seed_textbox.setEnabled(False)
+    # def update_seed_textbox(self):
+    #     if self.random_seed_checkbox.isChecked():
+    #         self.seed_textbox.setEnabled(True)
+    #     else:
+    #         self.seed_textbox.setEnabled(False)
 
     def reset_interface(self):
         self.draw_embed(None, None, "current")
@@ -527,8 +527,8 @@ class UI(QDialog):
         self.set_loading(0)
         #self.play_button.setDisabled(True)
         #self.generate_button.setDisabled(True)
-        self.synthesize_button.setDisabled(True)
-        self.vocode_button.setDisabled(True)
+        # self.synthesize_button.setDisabled(True)
+        # self.vocode_button.setDisabled(True)
         # self.replay_wav_button.setDisabled(True)
         # self.export_wav_button.setDisabled(True)
         [self.log("") for _ in range(self.max_log_lines)]
@@ -676,15 +676,16 @@ class UI(QDialog):
         i += 1
         browser_layout.addWidget(QLabel("<b>We the people of the united states in order to form a more perfect union</b>"), i, 0)
         i += 1
+
         # Random & next utterance buttons
         self.record_button = QPushButton("Record")
         browser_layout.addWidget(self.record_button, i, 0)
-        self.play_button = QPushButton("Play")
-        i += 1
-        browser_layout.addWidget(self.play_button, i, 0)
-        i += 1
-        self.stop_button = QPushButton("Stop")
-        browser_layout.addWidget(self.stop_button, i, 0)
+        # self.play_buttonR = QPushButton("Play")
+        # i += 1
+        # browser_layout.addWidget(self.play_buttonR, i, 0)
+        # i += 1
+        # self.stop_button = QPushButton("Stop")
+        # browser_layout.addWidget(self.stop_button, i, 0)
         i += 1
 
         self.titel_one = QLabel("<b>Option 2: Browse</b>")
@@ -698,6 +699,14 @@ class UI(QDialog):
         self.utterance_history = QComboBox()
         browser_layout.addWidget(QLabel("<b>Option 3: Voice selection</b>"), i, 0)
         browser_layout.addWidget(self.utterance_history, i + 1, 0)
+        i += 1
+        self.play_button2 = QPushButton("Play")
+        i += 1
+        browser_layout.addWidget(self.play_button2, i, 0)
+        i += 1
+        self.stop_button = QPushButton("Stop")
+        browser_layout.addWidget(self.stop_button, i, 0)
+        i += 1
         # self.encoder_box = QComboBox()
         # browser_layout.addWidget(QLabel("<b>Encoder</b>"), i, 1)
         # browser_layout.addWidget(self.encoder_box, i + 1, 1)
@@ -796,10 +805,10 @@ class UI(QDialog):
         #gen_layout.addWidget(self.generate_button)
 
         layout = QHBoxLayout()
-        self.synthesize_button = QPushButton("Synthesize only")
-        layout.addWidget(self.synthesize_button)
-        self.vocode_button = QPushButton("Vocode only")
-        layout.addWidget(self.vocode_button)
+        # self.synthesize_button = QPushButton("Synthesize only")
+        # layout.addWidget(self.synthesize_button)
+        # self.vocode_button = QPushButton("Vocode only")
+        # layout.addWidget(self.vocode_button)
         gen_layout.addLayout(layout)
 
         layout = QHBoxLayout()
@@ -820,30 +829,30 @@ class UI(QDialog):
         layout.addWidget(self.audio_out_devices_cb)
         gen_layout.addLayout(layout)
         layout_seed = QGridLayout()
-        self.random_seed_checkbox = QCheckBox("Random seed:")
-        self.random_seed_checkbox.setToolTip("When checked, makes the synthesizer and vocoder deterministic.")
-        layout_seed.addWidget(self.random_seed_checkbox, 0, 0)
+        # self.random_seed_checkbox = QCheckBox("Random seed:")
+        # self.random_seed_checkbox.setToolTip("When checked, makes the synthesizer and vocoder deterministic.")
+        # layout_seed.addWidget(self.random_seed_checkbox, 0, 0)
         self.seed_textbox = QLineEdit()
         self.seed_textbox.setMaximumWidth(80)
         layout_seed.addWidget(self.seed_textbox, 0, 1)
-        self.trim_silences_checkbox = QCheckBox("Enhance vocoder output")
-        self.trim_silences_checkbox.setToolTip("When checked, trims excess silence in vocoder output."
-                                               " This feature requires `webrtcvad` to be installed.")
-        layout_seed.addWidget(self.trim_silences_checkbox, 0, 2, 1, 2)
+        # self.trim_silences_checkbox = QCheckBox("Enhance vocoder output")
+        # self.trim_silences_checkbox.setToolTip("When checked, trims excess silence in vocoder output."
+        #                                        " This feature requires `webrtcvad` to be installed.")
+        # layout_seed.addWidget(self.trim_silences_checkbox, 0, 2, 1, 2)
         gen_layout.addLayout(layout_seed)
 
-        self.loading_bar = QProgressBar()
-        gen_layout.addWidget(self.loading_bar)
+        # self.loading_bar = QProgressBar()
+        # gen_layout.addWidget(self.loading_bar)
 
 
 
-        self.log_window = QLabel()
-        self.log_window.setAlignment(Qt.AlignBottom | Qt.AlignLeft)
-        gen_layout.addWidget(self.log_window)
+        # self.log_window = QLabel()
+        # self.log_window.setAlignment(Qt.AlignBottom | Qt.AlignLeft)
+        # gen_layout.addWidget(self.log_window)
 
-        self.txt_window = QLabel()
-        self.txt_window.setAlignment(Qt.AlignBottom | Qt.AlignLeft)
-        browser_layout.addWidget(self.txt_window, i, 1)
+        # self.txt_window = QLabel()
+        # self.txt_window.setAlignment(Qt.AlignBottom | Qt.AlignLeft)
+        # browser_layout.addWidget(self.txt_window, i, 1)
 
         self.logs = []
         gen_layout.addStretch()

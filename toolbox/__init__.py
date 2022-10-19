@@ -94,18 +94,26 @@ class Toolbox:
         # Utterance selection
         func = lambda: self.load_from_browser(self.ui.browse_file())
         self.ui.browser_browse_button.clicked.connect(func)
+
         func = lambda: self.load_from_browser1(self.ui.play1())
-        self.ui.play_button1.clicked.connect(func)
+        self.ui.play_button2.clicked.connect(func)
+
         func = lambda: self.load_from_browser1(self.ui.rms1())
         self.ui.RMS_button1.clicked.connect(func)
+
         func = lambda: self.load_from_browser1(self.ui.browse_file1())
         self.ui.browser_browse_button1.clicked.connect(func)
+
         func = lambda: self.ui.draw_utterance(self.ui.selected_utterance, "current")
         self.ui.utterance_history.currentIndexChanged.connect(func)
+
+
         func = lambda: self.ui.play(self.ui.selected_utterance.wav, Synthesizer.sample_rate)
-        #self.ui.play_button.clicked.connect(func)
+        self.ui.play_button2.clicked.connect(func)
         self.ui.stop_button.clicked.connect(self.ui.stop)
         self.ui.record_button.clicked.connect(self.record)
+
+
         #self.ui.record_buttonIn.clicked.connect(self.ui.recordIn)
         func = lambda level: lambda: self.ui.plot(level)
         self.ui.word1.clicked.connect(func(0))
@@ -131,9 +139,9 @@ class Toolbox:
         # Generation
         func = lambda: self.synthesize() or self.vocode()
         #self.ui.generate_button.clicked.connect(func)
-        self.ui.synthesize_button.clicked.connect(self.synthesize)
-        self.ui.vocode_button.clicked.connect(self.vocode)
-        self.ui.random_seed_checkbox.clicked.connect(self.update_seed_textbox)
+        # self.ui.synthesize_button.clicked.connect(self.synthesize)
+        # self.ui.vocode_button.clicked.connect(self.vocode)
+        # self.ui.random_seed_checkbox.clicked.connect(self.update_seed_textbox)
 
         # UMAP legend
         # self.ui.clear_button.clicked.connect(self.clear_utterances)
@@ -211,28 +219,11 @@ class Toolbox:
             return
         self.ui.play(wav, encoder.sampling_rate)
 
+
         speaker_name = "user01"
         name = self.ui.textboxValue
         self.add_real_utterance(wav, name, speaker_name)
-
-    # def recordIn(self):
-    #     wav = self.ui.record_one(encoder.sampling_rate, 5)
-    #     if wav is None:
-    #         return
-    #
-    #     r = sr.Recognizer()
-    #     with sr.AudioFile(wav) as source:
-    #         # listen for the data (load audio to memory)
-    #         audio_data = r.record(source)
-    #         # recognize (convert from speech to text)
-    #         text = r.recognize_google(audio_data)
-    # print(text)
-
-
-    # self.ui.play(wav, encoder.sampling_rate)
-    # speaker_name = "user01"
-    # name = self.ui.textboxValue
-    # self.add_real_utterance(wav, name, speaker_name)
+        return wav
 
 
     def add_real_utterance(self, wav, name, speaker_name):
@@ -264,18 +255,18 @@ class Toolbox:
         self.ui.set_loading(1)
 
         # Update the synthesizer random seed
-        if self.ui.random_seed_checkbox.isChecked():
-            seed = int(self.ui.seed_textbox.text())
-            self.ui.populate_gen_options(seed, self.trim_silences)
-        else:
-            seed = None
+        # if self.ui.random_seed_checkbox.isChecked():
+        #     seed = int(self.ui.seed_textbox.text())
+        #     self.ui.populate_gen_options(seed, self.trim_silences)
+        # else:
+        #     seed = None
 
-        if seed is not None:
-            torch.manual_seed(seed)
-
-        # Synthesize the spectrogram
-        if self.synthesizer is None or seed is not None:
-            self.init_synthesizer()
+        # if seed is not None:
+        #     torch.manual_seed(seed)
+        #
+        # # Synthesize the spectrogram
+        # if self.synthesizer is None or seed is not None:
+        #     self.init_synthesizer()
 
         #texts = self.ui.text_prompt.toPlainText().split("\n")
         texts = " "
@@ -294,18 +285,18 @@ class Toolbox:
         assert spec is not None
 
         # Initialize the vocoder model and make it determinstic, if user provides a seed
-        if self.ui.random_seed_checkbox.isChecked():
-            seed = int(self.ui.seed_textbox.text())
-            self.ui.populate_gen_options(seed, self.trim_silences)
-        else:
-            seed = None
+        # if self.ui.random_seed_checkbox.isChecked():
+        #     seed = int(self.ui.seed_textbox.text())
+        #     self.ui.populate_gen_options(seed, self.trim_silences)
+        # else:
+        #     seed = None
 
-        if seed is not None:
-            torch.manual_seed(seed)
-
-        # Synthesize the waveform
-        if not vocoder.is_loaded() or seed is not None:
-            self.init_vocoder()
+        # if seed is not None:
+        #     torch.manual_seed(seed)
+        #
+        # # Synthesize the waveform
+        # if not vocoder.is_loaded() or seed is not None:
+        #     self.init_vocoder()
 
         def vocoder_progress(i, seq_len, b_size, gen_rate):
             real_time_factor = (gen_rate / Synthesizer.sample_rate) * 1000
@@ -330,8 +321,8 @@ class Toolbox:
         wav = np.concatenate([i for w, b in zip(wavs, breaks) for i in (w, b)])
 
         # Trim excessive silences
-        if self.ui.trim_silences_checkbox.isChecked():
-            wav = encoder.preprocess_wav(wav)
+        # if self.ui.trim_silences_checkbox.isChecked():
+        #     wav = encoder.preprocess_wav(wav)
 
         # Play it
         wav = wav / np.abs(wav).max() * 0.97
