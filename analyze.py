@@ -169,6 +169,17 @@ def fftAndCross_plot(xf, yf, title, start=20, color='r',x=[], corr=[]):
     plt.title("Cross-Correlation")
     plt.show()
 
+def get_val(pathRe,save_path_gen):
+    path_yourBag = pathRe
+    signal_yourBag, sampling_rate = librosa.load(path_yourBag, sr=16000)
+    path_gen = save_path_gen
+    signal_gen, sampling_rate= librosa.load(path_gen, sr=16000)
+    words = STT(path_yourBag)
+    rms=rms_calculate(signal_yourBag, 16000)
+    #rms_plot(rms)
+    indexs_yourBag = audioSpliter(signal_yourBag, 16000, 'orig')
+    indexs_gen = audioSpliter(signal_gen, 16000, 'orig')
+    return words, signal_yourBag, signal_gen, indexs_yourBag, indexs_gen,rms
 
 def get_val_H():
     path_yourBag = 'records/_yourBag.wav'
