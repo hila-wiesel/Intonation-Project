@@ -67,6 +67,7 @@ class UI(QDialog):
     min_umap_points = 4
     max_log_lines = 5
     max_saved_utterances = 20
+    save_path_gen=""
     #bold_yourBag2={}
     #fft_yourBag2={}
     #cros_yourBag2={}
@@ -245,8 +246,8 @@ class UI(QDialog):
 
         return wav
     #@property
-    #def current_dataset_name(self):
-    #return self.dataset_box.currentText()
+    def current_dataset_name(self):
+        return self.dataset_box.currentText()
 
     #@property
     #def current_speaker_name(self):
@@ -262,6 +263,7 @@ class UI(QDialog):
             caption="Select an audio file",
             filter="Audio Files (*.mp3 *.flac *.wav *.m4a)"
         )
+        self.save_path_gen=Path(fpath[0])
         return Path(fpath[0]) if fpath[0] != "" else ""
 
     def wav_graph(self,path):
@@ -306,9 +308,11 @@ class UI(QDialog):
         plt.title("Wavefrom")
         plt.plot(Time, raw, color="blue")
         plt.ylabel("Amplitude")
-
-
-
+        arr=analyze.STT(fpath[0])
+        print(len(arr))
+        if len(arr)>10:
+            print("The sentence is too long, please insert a new sentence")
+            return
 
         signal = []
         #print("fpath[0]    ",fpath[0])
@@ -322,7 +326,7 @@ class UI(QDialog):
             for i in range(len(thewords)):
                 self.words.insert(i, thewords[i])
             print(self.words)
-            self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = bolds_fft(thewords, signal_yourBag, signal_gen,
+            self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = analyze.bolds_fft(thewords, signal_yourBag, signal_gen,
                                                                                   indexs_yourBag, indexs_gen, 30000)
             signal = signal_yourBag
 
@@ -334,7 +338,7 @@ class UI(QDialog):
                 self.words.insert(i, thewords[i])
             # self.words=["I","did","not","steal","your","bag","","","",""]
             print("thewords    ", thewords)
-            self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = bolds_fft(thewords, signal_steal, signal_gen_N,
+            self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = analyze.bolds_fft(thewords, signal_steal, signal_gen_N,
                                                                                   indexs_steal, indexs_gen_N, 30000)
             print(self.bold_yourBag2)
             signal = signal_steal
@@ -345,11 +349,22 @@ class UI(QDialog):
             for i in range(len(thewords)):
                 self.words.insert(i, thewords[i])
             print(self.words)
-            self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = bolds_fft(thewords, signal_hello,
+            self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = analyze.bolds_fft(thewords, signal_hello,
                                                                                   signal_gen_hello, indexs_hello,
                                                                                   indexs_gen_hello, 72000)
             signal = signal_hello
-
+        else:
+            self.words = ["", "", "", "", "", "", "", "", "", ""]
+            print(fpath[0])
+            print(self.save_path_gen)
+            thewords, signal_hello, signal_gen_hello, indexs_hello, indexs_gen_hello ,self.rms = analyze.get_val(fpath[0],str(self.save_path_gen))
+            for i in range(len(thewords)):
+                self.words.insert(i, thewords[i])
+            print(self.words)
+            self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = analyze.bolds_fft(thewords, signal_hello,
+                                                                                  signal_gen_hello, indexs_hello,
+                                                                                  indexs_gen_hello, 30000)
+            signal = signal_hello
         #self.rms = rms_calculate(signal, 1600)
         #rms = rms_calculate(signal, 1600)
         #plt.figure(figsize=(10,4))
@@ -593,7 +608,7 @@ class UI(QDialog):
         ## Browser
         # Dataset, speaker and utterance selection
         i = 0
-        #self.dataset_box = QComboBox()
+        self.dataset_box = QComboBox()
         #browser_layout.addWidget(QLabel("<b>Dataset</b>"), i, 0)
         #browser_layout.addWidget(self.dataset_box, i + 1, 0)
         #self.speaker_box = QComboBox()
@@ -628,7 +643,7 @@ class UI(QDialog):
         self.titel_part_two.setFont(QFont('Times', 25))
         i += 1
 
-        self.titel_explaine = QLabel("    - by creating a new user/browse/voice selection")
+        self.titel_explaine = QLabel("    - Choose one of the three options")
         browser_layout.addWidget(self.titel_explaine , i, 0)
         self.titel_explaine.setFont(QFont('Times', 17))
         i += 1
@@ -672,10 +687,10 @@ class UI(QDialog):
         # browser_layout.addWidget(self.utterance_sentenceText, i,1)
         i += 1
 
-        browser_layout.addWidget(QLabel("<b>In order for us to recognize your voice please record the following sentence:</b>"), i, 0)
+        browser_layout.addWidget(QLabel("<b>In order for us to recognize your voice please record a sentence:</b>"), i, 0)
         i += 1
-        browser_layout.addWidget(QLabel("<b>We the people of the united states in order to form a more perfect union</b>"), i, 0)
-        i += 1
+        #browser_layout.addWidget(QLabel("<b>We the people of the united states in order to form a more perfect union</b>"), i, 0)
+        #i += 1
 
         # Random & next utterance buttons
         self.record_button = QPushButton("Record")
@@ -814,19 +829,19 @@ class UI(QDialog):
         layout = QHBoxLayout()
         self.encoder_box = QComboBox()
         self.encoder_box.addItem("Encoder")
-        layout.addWidget(self.encoder_box)
+        #layout.addWidget(self.encoder_box)
         self.vocoder_box = QComboBox()
         self.vocoder_box.addItem("Vocoder")
-        layout.addWidget(self.vocoder_box)
+        #layout.addWidget(self.vocoder_box)
         gen_layout.addLayout(layout)
 
         layout = QHBoxLayout()
         self.synthesizer_box = QComboBox()
         self.synthesizer_box.addItem("Synthesizer")
-        layout.addWidget(self.synthesizer_box)
+        #layout.addWidget(self.synthesizer_box)
         self.audio_out_devices_cb = QComboBox()
         self.audio_out_devices_cb.addItem("Audio Output")
-        layout.addWidget(self.audio_out_devices_cb)
+        #layout.addWidget(self.audio_out_devices_cb)
         gen_layout.addLayout(layout)
         layout_seed = QGridLayout()
         # self.random_seed_checkbox = QCheckBox("Random seed:")
@@ -834,7 +849,7 @@ class UI(QDialog):
         # layout_seed.addWidget(self.random_seed_checkbox, 0, 0)
         self.seed_textbox = QLineEdit()
         self.seed_textbox.setMaximumWidth(80)
-        layout_seed.addWidget(self.seed_textbox, 0, 1)
+        #layout_seed.addWidget(self.seed_textbox, 0, 1)
         # self.trim_silences_checkbox = QCheckBox("Enhance vocoder output")
         # self.trim_silences_checkbox.setToolTip("When checked, trims excess silence in vocoder output."
         #                                        " This feature requires `webrtcvad` to be installed.")
@@ -926,7 +941,7 @@ class UI(QDialog):
 
     def textfun(self,text):
 
-        self.txt_window.setText(text)
+        #self.txt_window.setText(text)
         arr=text.split(" ")
         values = self.bold_yourBag2.values()
         values_list = list(values)

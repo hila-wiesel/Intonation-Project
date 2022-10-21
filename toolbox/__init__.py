@@ -96,7 +96,7 @@ class Toolbox:
         self.ui.browser_browse_button.clicked.connect(func)
 
         func = lambda: self.load_from_browser1(self.ui.play1())
-        self.ui.play_button2.clicked.connect(func)
+        self.ui.play_button1.clicked.connect(func)
 
         func = lambda: self.load_from_browser1(self.ui.rms1())
         self.ui.RMS_button1.clicked.connect(func)
