@@ -327,7 +327,7 @@ class UI(QDialog):
                 self.words.insert(i, thewords[i])
             print(self.words)
             self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = analyze.bolds_fft(thewords, signal_yourBag, signal_gen,
-                                                                                  indexs_yourBag, indexs_gen, 30000)
+                                                                                          indexs_yourBag, indexs_gen, 30000)
             signal = signal_yourBag
 
         if ("_steal" in fpath[0]):
@@ -339,7 +339,7 @@ class UI(QDialog):
             # self.words=["I","did","not","steal","your","bag","","","",""]
             print("thewords    ", thewords)
             self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = analyze.bolds_fft(thewords, signal_steal, signal_gen_N,
-                                                                                  indexs_steal, indexs_gen_N, 30000)
+                                                                                          indexs_steal, indexs_gen_N, 30000)
             print(self.bold_yourBag2)
             signal = signal_steal
 
@@ -350,8 +350,8 @@ class UI(QDialog):
                 self.words.insert(i, thewords[i])
             print(self.words)
             self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = analyze.bolds_fft(thewords, signal_hello,
-                                                                                  signal_gen_hello, indexs_hello,
-                                                                                  indexs_gen_hello, 72000)
+                                                                                          signal_gen_hello, indexs_hello,
+                                                                                          indexs_gen_hello, 72000)
             signal = signal_hello
         else:
             self.words = ["", "", "", "", "", "", "", "", "", ""]
@@ -362,8 +362,8 @@ class UI(QDialog):
                 self.words.insert(i, thewords[i])
             print(self.words)
             self.bold_yourBag2, self.fft_yourBag2, self.cros_yourBag2 = analyze.bolds_fft(thewords, signal_hello,
-                                                                                  signal_gen_hello, indexs_hello,
-                                                                                  indexs_gen_hello, 30000)
+                                                                                          signal_gen_hello, indexs_hello,
+                                                                                          indexs_gen_hello, 30000)
             signal = signal_hello
         #self.rms = rms_calculate(signal, 1600)
         #rms = rms_calculate(signal, 1600)
@@ -583,16 +583,16 @@ class UI(QDialog):
         root_layout.addLayout(browser_layout, 0, 0, 1, 2)
 
         # Generation
-        gen_layout = QVBoxLayout()
-        root_layout.addLayout(gen_layout, 0, 2, 1, 2)
+        #gen_layout = QVBoxLayout()
+        #root_layout.addLayout(gen_layout, 0, 2, 1, 2)
 
         # Projections
-        self.projections_layout = QVBoxLayout()
-        root_layout.addLayout(self.projections_layout, 1, 0, 1, 1)
+        #self.projections_layout = QVBoxLayout()
+        #root_layout.addLayout(self.projections_layout, 1, 0, 1, 1)
 
         # Visualizations
         vis_layout = QVBoxLayout()
-        root_layout.addLayout(vis_layout, 1, 1, 1, 3)
+        root_layout.addLayout(vis_layout, 1, 0, 1, 2)
 
 
         ## Projections
@@ -638,7 +638,7 @@ class UI(QDialog):
         self.titel_part_one = QLabel("<b>Part 1- Choose the voice : </b>")
         browser_layout.addWidget(self.titel_part_one , i, 0)
         self.titel_part_one.setFont(QFont('Times', 25))
-        self.titel_part_two = QLabel("<b>Part 2- Recording for sentence selection : </b>")
+        self.titel_part_two = QLabel("<b>Part 2- Recording for sentence selection :           </b>")
         browser_layout.addWidget(self.titel_part_two  , i, 1)
         self.titel_part_two.setFont(QFont('Times', 25))
         i += 1
@@ -755,7 +755,7 @@ class UI(QDialog):
         i += 1
         j=0
         j+= 1
-        self.titel_part_one = QLabel("Analyze : ")
+        self.titel_part_one = QLabel("Analyze :     ")
         browser_layout.addWidget(self.titel_part_one , j, 4)
         self.titel_explaine.setFont(QFont('Times', 25))
         j+= 1
@@ -789,18 +789,18 @@ class UI(QDialog):
         self.word10 = QPushButton("")
         browser_layout.addWidget(self.word10, j, 4)
         ## Embed & spectrograms
-        vis_layout.addStretch()
+        #vis_layout.addStretch()
 
         ## Embed & spectrograms
-        vis_layout.addStretch()
+        #vis_layout.addStretch()
 
-        gridspec_kw = {"width_ratios": [1, 4]}
-        fig, self.current_ax = plt.subplots(1, 2, figsize=(10, 2.25), facecolor="#F0F0F0",
+        gridspec_kw = {"width_ratios": [1, 1]}
+        fig, self.current_ax = plt.subplots(1, 2, figsize=(5, 2.25), facecolor="#F0F0F0",
                                             gridspec_kw=gridspec_kw)
         fig.subplots_adjust(left=0, bottom=0.1, right=1, top=0.8)
         vis_layout.addWidget(FigureCanvas(fig))
 
-        fig, self.gen_ax = plt.subplots(1, 2, figsize=(10, 2.25), facecolor="#F0F0F0",
+        fig, self.gen_ax = plt.subplots(1, 2, figsize=(5, 2.25), facecolor="#F0F0F0",
                                         gridspec_kw=gridspec_kw)
         fig.subplots_adjust(left=0, bottom=0.1, right=1, top=0.8)
         vis_layout.addWidget(FigureCanvas(fig))
@@ -824,7 +824,8 @@ class UI(QDialog):
         # layout.addWidget(self.synthesize_button)
         # self.vocode_button = QPushButton("Vocode only")
         # layout.addWidget(self.vocode_button)
-        gen_layout.addLayout(layout)
+        #gen_layout.addLayout(layout)
+
 
         layout = QHBoxLayout()
         self.encoder_box = QComboBox()
@@ -833,7 +834,7 @@ class UI(QDialog):
         self.vocoder_box = QComboBox()
         self.vocoder_box.addItem("Vocoder")
         #layout.addWidget(self.vocoder_box)
-        gen_layout.addLayout(layout)
+        #gen_layout.addLayout(layout)
 
         layout = QHBoxLayout()
         self.synthesizer_box = QComboBox()
@@ -842,8 +843,8 @@ class UI(QDialog):
         self.audio_out_devices_cb = QComboBox()
         self.audio_out_devices_cb.addItem("Audio Output")
         #layout.addWidget(self.audio_out_devices_cb)
-        gen_layout.addLayout(layout)
-        layout_seed = QGridLayout()
+        #gen_layout.addLayout(layout)
+        #layout_seed = QGridLayout()
         # self.random_seed_checkbox = QCheckBox("Random seed:")
         # self.random_seed_checkbox.setToolTip("When checked, makes the synthesizer and vocoder deterministic.")
         # layout_seed.addWidget(self.random_seed_checkbox, 0, 0)
@@ -854,7 +855,7 @@ class UI(QDialog):
         # self.trim_silences_checkbox.setToolTip("When checked, trims excess silence in vocoder output."
         #                                        " This feature requires `webrtcvad` to be installed.")
         # layout_seed.addWidget(self.trim_silences_checkbox, 0, 2, 1, 2)
-        gen_layout.addLayout(layout_seed)
+        #gen_layout.addLayout(layout_seed)
 
         # self.loading_bar = QProgressBar()
         # gen_layout.addWidget(self.loading_bar)
@@ -870,7 +871,7 @@ class UI(QDialog):
         # browser_layout.addWidget(self.txt_window, i, 1)
 
         self.logs = []
-        gen_layout.addStretch()
+        #gen_layout.addStretch()
 
 
         ## Set the size of the window and of the elements
