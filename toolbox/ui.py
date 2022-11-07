@@ -78,7 +78,7 @@ class UI(QDialog):
         words.insert(i , thewords[i])
     print(words)
     bold_yourBag2, fft_yourBag2, cros_yourBag2 = bolds_fft(thewords, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2, 30000)
-
+    flag=False
 
 
     def draw_utterance(self, utterance: Utterance, which):
@@ -86,7 +86,7 @@ class UI(QDialog):
         self.draw_embed(utterance.embed, utterance.name, which)
 
     def draw_embed(self, embed, name, which):
-        embed_ax, _ = self.current_ax if which == "current" else self.gen_ax
+        embed_ax, _ = self.current_ax
         embed_ax.figure.suptitle("" if embed is None else name)
 
         ## Embedding
@@ -105,20 +105,20 @@ class UI(QDialog):
         embed_ax.figure.canvas.draw()
 
     def draw_spec(self, spec, which):
-        _, spec_ax = self.current_ax if which == "current" else self.gen_ax
+        _, spec_ax = self.current_ax
 
         ## Spectrogram
         # Draw the spectrogram
         spec_ax.clear()
-        if spec is not None:
-            spec_ax.imshow(spec, aspect="auto", interpolation="none")
-            spec_ax.set_title("mel spectrogram")
+        #if spec is not None:
+            #spec_ax.imshow(spec, aspect="auto", interpolation="none")
+            #spec_ax.set_title("mel spectrogram")
 
         spec_ax.set_xticks([])
         spec_ax.set_yticks([])
         spec_ax.figure.canvas.draw()
-        # if which != "current":
-        #     self.vocode_button.setDisabled(spec is None)
+        if which != "current":
+             self.vocode_button.setDisabled(spec is None)
 
     def save_audio_file(self, wav, sample_rate):
         dialog = QFileDialog()
@@ -250,8 +250,8 @@ class UI(QDialog):
         return self.dataset_box.currentText()
 
     #@property
-    #def current_speaker_name(self):
-    #return self.speaker_box.currentText()
+    def current_speaker_name(self):
+        return self.speaker_box.currentText()
 
     @property
     def current_utterance_name(self):
@@ -263,11 +263,12 @@ class UI(QDialog):
             caption="Select an audio file",
             filter="Audio Files (*.mp3 *.flac *.wav *.m4a)"
         )
+        self.flag= True
         self.save_path_gen=Path(fpath[0])
         return Path(fpath[0]) if fpath[0] != "" else ""
 
     def wav_graph(self,path):
-        #plt.ion()
+        plt.ion()
         wav = wave.open(path, "r")
         raw = wav.readframes(-1)
         raw = np.frombuffer(raw, "int16")
@@ -282,6 +283,7 @@ class UI(QDialog):
         plt.title("Wavefrom")
         plt.plot(Time, raw, color="blue")
         plt.ylabel("Amplitude")
+        plt.show()
 
     def browse_file1(self):
         fpath = QFileDialog().getOpenFileName(
@@ -305,9 +307,9 @@ class UI(QDialog):
 
         Time = np.linspace(0, len(raw) / sampleRate, num=len(raw))
 
-        plt.title("Wavefrom")
-        plt.plot(Time, raw, color="blue")
-        plt.ylabel("Amplitude")
+        #plt.title("Wavefrom")
+        #plt.plot(Time, raw, color="blue")
+        #plt.ylabel("Amplitude")
         arr=analyze.STT(fpath[0])
         print(len(arr))
         if len(arr)>10:
@@ -414,7 +416,7 @@ class UI(QDialog):
                 #self.random_speaker_button.setDisabled(True)
                 #self.random_dataset_button.setDisabled(True)
                 #self.utterance_box.setDisabled(True)
-                #self.speaker_box.setDisabled(True)
+                self.speaker_box.setDisabled(True)
                 #self.dataset_box.setDisabled(True)
                 #self.browser_load_button.setDisabled(True)
                 #self.auto_next_checkbox.setDisabled(True)
@@ -422,10 +424,10 @@ class UI(QDialog):
             #self.repopulate_box(self.dataset_box, datasets, random)
 
         # Select a random speaker
-        #if level <= 1:
-        #speakers_root = datasets_root.joinpath(self.current_dataset_name)
-        #speaker_names = [d.stem for d in speakers_root.glob("*") if d.is_dir()]
-        #self.repopulate_box(self.speaker_box, speaker_names, random)
+        if level <= 1:
+            speakers_root = datasets_root.joinpath(self.current_dataset_name)
+            speaker_names = [d.stem for d in speakers_root.glob("*") if d.is_dir()]
+            self.repopulate_box(self.speaker_box, speaker_names, random)
 
         # Select a random utterance
         if level <= 2:
@@ -490,8 +492,8 @@ class UI(QDialog):
             self.utterance_history.removeItem(self.max_saved_utterances)
 
         #self.play_button.setDisabled(False)
-        #self.generate_button.setDisabled(False)
-        # self.synthesize_button.setDisabled(False)
+        self.generate_button.setDisabled(False)
+        self.synthesize_button.setDisabled(False)
 
     def log(self, line, mode="newline"):
         if mode == "newline":
@@ -523,9 +525,9 @@ class UI(QDialog):
             self.seed_textbox.setText(str(0))
             self.seed_textbox.setEnabled(False)
 
-        # if not trim_silences:
-        #     self.trim_silences_checkbox.setChecked(False)
-        #     self.trim_silences_checkbox.setDisabled(True)
+        #if not trim_silences:
+        #    self.trim_silences_checkbox.setChecked(False)
+        #    self.trim_silences_checkbox.setDisabled(True)
 
     # def update_seed_textbox(self):
     #     if self.random_seed_checkbox.isChecked():
@@ -541,9 +543,9 @@ class UI(QDialog):
         # self.draw_umap_projections(set())
         self.set_loading(0)
         #self.play_button.setDisabled(True)
-        #self.generate_button.setDisabled(True)
-        # self.synthesize_button.setDisabled(True)
-        # self.vocode_button.setDisabled(True)
+        self.generate_button.setDisabled(True)
+        self.synthesize_button.setDisabled(True)
+        self.vocode_button.setDisabled(True)
         # self.replay_wav_button.setDisabled(True)
         # self.export_wav_button.setDisabled(True)
         [self.log("") for _ in range(self.max_log_lines)]
@@ -583,8 +585,8 @@ class UI(QDialog):
         root_layout.addLayout(browser_layout, 0, 0, 1, 2)
 
         # Generation
-        #gen_layout = QVBoxLayout()
-        #root_layout.addLayout(gen_layout, 0, 2, 1, 2)
+        gen_layout = QVBoxLayout()
+        root_layout.addLayout(gen_layout, 0, 2, 1, 2)
 
         # Projections
         #self.projections_layout = QVBoxLayout()
@@ -611,7 +613,7 @@ class UI(QDialog):
         self.dataset_box = QComboBox()
         #browser_layout.addWidget(QLabel("<b>Dataset</b>"), i, 0)
         #browser_layout.addWidget(self.dataset_box, i + 1, 0)
-        #self.speaker_box = QComboBox()
+        self.speaker_box = QComboBox()
         #browser_layout.addWidget(QLabel("<b>Speaker</b>"), i, 1)
         #browser_layout.addWidget(self.speaker_box, i + 1, 1)
         #self.utterance_box = QComboBox()
@@ -739,25 +741,25 @@ class UI(QDialog):
 
         #Replay & Save Audio
         # # browser_layout.addWidget(QLabel("<b>Toolbox Output:</b>"), i, 0)
-        # self.waves_cb = QComboBox()
-        # self.waves_cb_model = QStringListModel()
-        # self.waves_cb.setModel(self.waves_cb_model)
-        # self.waves_cb.setToolTip("Select one of the last generated waves in this section for replaying or exporting")
-        # browser_layout.addWidget(self.waves_cb, i, 1)
+        self.waves_cb = QComboBox()
+        self.waves_cb_model = QStringListModel()
+        self.waves_cb.setModel(self.waves_cb_model)
+        self.waves_cb.setToolTip("Select one of the last generated waves in this section for replaying or exporting")
+        #browser_layout.addWidget(self.waves_cb, j, 4)
         # self.replay_wav_button = QPushButton("Replay")
         # self.replay_wav_button.setToolTip("Replay last generated vocoder")
         # browser_layout.addWidget(self.replay_wav_button, i, 2)
-        # self.export_wav_button = QPushButton("Export")
-        # self.export_wav_button.setToolTip("Save last generated vocoder audio in filesystem as a wav file")
-        # browser_layout.addWidget(self.export_wav_button, i, 3)
-        # i += 1
+        #self.export_wav_button = QPushButton("Export")
+        #self.export_wav_button.setToolTip("Save last generated vocoder audio in filesystem as a wav file")
+        #browser_layout.addWidget(self.export_wav_button, i, 3)
+        i += 1
 
         i += 1
         j=0
         j+= 1
-        self.titel_part_one = QLabel("Analyze :     ")
-        browser_layout.addWidget(self.titel_part_one , j, 4)
-        self.titel_explaine.setFont(QFont('Times', 25))
+        self.titel_part_oneII = QLabel("Analyze :")
+        browser_layout.addWidget(self.titel_part_oneII , j, 4)
+        self.titel_part_oneII.setFont(QFont('Times', 25))
         j+= 1
         self.word1 = QPushButton("")
         browser_layout.addWidget(self.word1, j, 4)
@@ -799,32 +801,39 @@ class UI(QDialog):
                                             gridspec_kw=gridspec_kw)
         fig.subplots_adjust(left=0, bottom=0.1, right=1, top=0.8)
         vis_layout.addWidget(FigureCanvas(fig))
-
+        '''
         fig, self.gen_ax = plt.subplots(1, 2, figsize=(5, 2.25), facecolor="#F0F0F0",
                                         gridspec_kw=gridspec_kw)
         fig.subplots_adjust(left=0, bottom=0.1, right=1, top=0.8)
         vis_layout.addWidget(FigureCanvas(fig))
-
-        for ax in self.current_ax.tolist() + self.gen_ax.tolist():
+        '''
+        for ax in self.current_ax.tolist():
             ax.set_facecolor("#F0F0F0")
             for side in ["top", "right", "bottom", "left"]:
                 ax.spines[side].set_visible(False)
 
 
         ## Generation
-        #self.text_prompt = QPlainTextEdit(default_text)
-        #gen_layout.addWidget(self.text_prompt, stretch=1)
-
-
-        #self.generate_button = QPushButton("Synthesize and vocode")
-        #gen_layout.addWidget(self.generate_button)
+        self.text_prompt = QPlainTextEdit(default_text)
+        gen_layout.addWidget(self.text_prompt, stretch=1)
 
         layout = QHBoxLayout()
-        # self.synthesize_button = QPushButton("Synthesize only")
-        # layout.addWidget(self.synthesize_button)
-        # self.vocode_button = QPushButton("Vocode only")
-        # layout.addWidget(self.vocode_button)
-        #gen_layout.addLayout(layout)
+        self.generate_button = QPushButton("Synthesize and vocode")
+        layout.addWidget(self.generate_button)
+        gen_layout.addLayout(layout)
+
+        layout = QHBoxLayout()
+        self.synthesize_button = QPushButton("Synthesize only")
+        layout.addWidget(self.synthesize_button)
+        gen_layout.addLayout(layout)
+
+
+        layout = QHBoxLayout()
+        self.vocode_button = QPushButton("Vocode only")
+        layout.addWidget(self.vocode_button)
+        gen_layout.addLayout(layout)
+        #j+= 1
+        #browser_layout.addWidget(self.waves_cb, j, 4)
 
 
         layout = QHBoxLayout()
@@ -845,14 +854,15 @@ class UI(QDialog):
         #layout.addWidget(self.audio_out_devices_cb)
         #gen_layout.addLayout(layout)
         #layout_seed = QGridLayout()
-        # self.random_seed_checkbox = QCheckBox("Random seed:")
-        # self.random_seed_checkbox.setToolTip("When checked, makes the synthesizer and vocoder deterministic.")
-        # layout_seed.addWidget(self.random_seed_checkbox, 0, 0)
+        self.random_seed_checkbox = QCheckBox("Random seed:")
+        self.random_seed_checkbox.setToolTip("When checked, makes the synthesizer and vocoder deterministic.")
+        #layout_seed.addWidget(self.random_seed_checkbox, 0, 0)
+
         self.seed_textbox = QLineEdit()
-        self.seed_textbox.setMaximumWidth(80)
+        self.seed_textbox.setMaximumWidth(30)
         #layout_seed.addWidget(self.seed_textbox, 0, 1)
-        # self.trim_silences_checkbox = QCheckBox("Enhance vocoder output")
-        # self.trim_silences_checkbox.setToolTip("When checked, trims excess silence in vocoder output."
+        #self.trim_silences_checkbox = QCheckBox("Enhance vocoder output")
+        #self.trim_silences_checkbox.setToolTip("When checked, trims excess silence in vocoder output."
         #                                        " This feature requires `webrtcvad` to be installed.")
         # layout_seed.addWidget(self.trim_silences_checkbox, 0, 2, 1, 2)
         #gen_layout.addLayout(layout_seed)
@@ -902,43 +912,46 @@ class UI(QDialog):
         self.textboxValue = self.utterance_historyText.text()
 
     def rms1(self):
-        analyze.rms_plot(self.rms)
-        plt.show()
+        if self.flag:
+            analyze.rms_plot(self.rms)
+            plt.show()
 
     def start(self):
         self.app.exec_()
 
     def plot(self,level1):
-        #plt.ion()
-        #words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analyze.get_val()
-        #print(words)
-        #bold_yourBag2, fft_yourBag2, cros_yourBag2 = bolds_fft(words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2, 30000)
-        #fig, axs = plt.subplots(2, 1)
-        #print(self.words[ind])
-        #print(ind)
-        #print(type(ind))
-        print("self.words   :",self.words)
-        if level1<len(self.words):
-            level=self.words[level1]
-            if level!= "":
-                print(self.fft_yourBag2)
-                ind=1
-                print(self.words[ind])
-                fft_yourBag3=list(self.fft_yourBag2.items())
-                xf_orig = fft_yourBag3[level1][1][0]
-                yf_orig = fft_yourBag3[level1][1][1]
-                xf_gen = fft_yourBag3[level1][1][2]
-                yf_gen = fft_yourBag3[level1][1][3]
+        if self.flag:
+            #plt.ion()
+            #words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2= analyze.get_val()
+            #print(words)
+            #bold_yourBag2, fft_yourBag2, cros_yourBag2 = bolds_fft(words, signal_yourBag2, signal_gen, indexs_yourBag2, indexs_gen2, 30000)
+            #fig, axs = plt.subplots(2, 1)
+            #print(self.words[ind])
+            #print(ind)
+            #print(type(ind))
+            print("self.words   :",self.words)
+            if level1<len(self.words):
+                level=self.words[level1]
+                if level!= "":
+                    print(self.fft_yourBag2)
+                    ind=1
+                    print(self.words[ind])
+                    fft_yourBag3=list(self.fft_yourBag2.items())
+                    xf_orig = fft_yourBag3[level1][1][0]
+                    yf_orig = fft_yourBag3[level1][1][1]
+                    xf_gen = fft_yourBag3[level1][1][2]
+                    yf_gen = fft_yourBag3[level1][1][3]
 
-                self.cros_yourBag3=list(self.cros_yourBag2.items())
-                x = self.cros_yourBag3[level1][1][0]
-                #print(x)
-                corr = self.cros_yourBag3[level1][1][1]
-                #print(corr)
-                analyze.fftAndCross_plot(xf_orig, yf_orig, "original", start=20, color='b',x= self.cros_yourBag3[level1][1][0],corr= self.cros_yourBag3[level1][1][1])
-                analyze.fftAndCross_plot(xf_gen, yf_gen, "generated", start=20, color='g',x= self.cros_yourBag3[level1][1][0],corr= self.cros_yourBag3[level1][1][1])
+                    self.cros_yourBag3=list(self.cros_yourBag2.items())
+                    x = self.cros_yourBag3[level1][1][0]
+                    #print(x)
+                    corr = self.cros_yourBag3[level1][1][1]
+                    #print(corr)
+                    analyze.fftAndCross_plot(xf_orig, yf_orig, "original", start=20, color='b',x= self.cros_yourBag3[level1][1][0],corr= self.cros_yourBag3[level1][1][1])
+                    analyze.fftAndCross_plot(xf_gen, yf_gen, "generated", start=20, color='g',x= self.cros_yourBag3[level1][1][0],corr= self.cros_yourBag3[level1][1][1])
 
-                #plt.show()
+                    #plt.show()
+
 
     def textfun(self,text):
 
@@ -947,6 +960,7 @@ class UI(QDialog):
         values = self.bold_yourBag2.values()
         values_list = list(values)
         print(values_list)
+
         for i in range (1,(len(arr))):
             if(i==1):
                 self.word1.setStyleSheet('background-color: white;')

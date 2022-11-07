@@ -134,14 +134,14 @@ class Toolbox:
         # self.ui.replay_wav_button.clicked.connect(func)
         func = lambda: self.export_current_wave()
         # self.ui.export_wav_button.clicked.connect(func)
-        # self.ui.waves_cb.currentIndexChanged.connect(self.set_current_wav)
+        self.ui.waves_cb.currentIndexChanged.connect(self.set_current_wav)
 
         # Generation
         func = lambda: self.synthesize() or self.vocode()
-        #self.ui.generate_button.clicked.connect(func)
-        # self.ui.synthesize_button.clicked.connect(self.synthesize)
-        # self.ui.vocode_button.clicked.connect(self.vocode)
-        # self.ui.random_seed_checkbox.clicked.connect(self.update_seed_textbox)
+        self.ui.generate_button.clicked.connect(func)
+        self.ui.synthesize_button.clicked.connect(self.synthesize)
+        self.ui.vocode_button.clicked.connect(self.vocode)
+        self.ui.random_seed_checkbox.clicked.connect(self.update_seed_textbox)
 
         # UMAP legend
         # self.ui.clear_button.clicked.connect(self.clear_utterances)
@@ -209,7 +209,7 @@ class Toolbox:
                 text = "I did not still your bag "
             print(text)
             self.ui.textfun(text)
-            # self.ui.text_prompt.appendPlainText(text)
+            self.ui.text_prompt.appendPlainText(text)
             # self.ui.utterance_sentenceText.move(20, 20)
 
 
@@ -255,21 +255,21 @@ class Toolbox:
         self.ui.set_loading(1)
 
         # Update the synthesizer random seed
-        # if self.ui.random_seed_checkbox.isChecked():
-        #     seed = int(self.ui.seed_textbox.text())
-        #     self.ui.populate_gen_options(seed, self.trim_silences)
-        # else:
-        #     seed = None
+        if self.ui.random_seed_checkbox.isChecked():
+             seed = int(self.ui.seed_textbox.text())
+             self.ui.populate_gen_options(seed, self.trim_silences)
+        else:
+             seed = None
 
-        # if seed is not None:
-        #     torch.manual_seed(seed)
-        #
+        if seed is not None:
+             torch.manual_seed(seed)
+
         # # Synthesize the spectrogram
-        # if self.synthesizer is None or seed is not None:
-        #     self.init_synthesizer()
+        if self.synthesizer is None or seed is not None:
+             self.init_synthesizer()
 
-        #texts = self.ui.text_prompt.toPlainText().split("\n")
-        texts = " "
+        texts = self.ui.text_prompt.toPlainText().split("\n")
+        #texts = " "
         embed = self.ui.selected_utterance.embed
         embeds = [embed] * len(texts)
         specs = self.synthesizer.synthesize_spectrograms(texts, embeds)
@@ -285,18 +285,18 @@ class Toolbox:
         assert spec is not None
 
         # Initialize the vocoder model and make it determinstic, if user provides a seed
-        # if self.ui.random_seed_checkbox.isChecked():
-        #     seed = int(self.ui.seed_textbox.text())
-        #     self.ui.populate_gen_options(seed, self.trim_silences)
-        # else:
-        #     seed = None
+        if self.ui.random_seed_checkbox.isChecked():
+             seed = int(self.ui.seed_textbox.text())
+             self.ui.populate_gen_options(seed, self.trim_silences)
+        else:
+             seed = None
 
-        # if seed is not None:
-        #     torch.manual_seed(seed)
+        if seed is not None:
+            torch.manual_seed(seed)
         #
         # # Synthesize the waveform
-        # if not vocoder.is_loaded() or seed is not None:
-        #     self.init_vocoder()
+        if not vocoder.is_loaded() or seed is not None:
+             self.init_vocoder()
 
         def vocoder_progress(i, seq_len, b_size, gen_rate):
             real_time_factor = (gen_rate / Synthesizer.sample_rate) * 1000
@@ -321,7 +321,7 @@ class Toolbox:
         wav = np.concatenate([i for w, b in zip(wavs, breaks) for i in (w, b)])
 
         # Trim excessive silences
-        # if self.ui.trim_silences_checkbox.isChecked():
+        #if self.ui.trim_silences_checkbox.isChecked():
         #     wav = encoder.preprocess_wav(wav)
 
         # Play it
@@ -340,16 +340,16 @@ class Toolbox:
         self.waves_list.insert(0, wav)
         self.waves_namelist.insert(0, wav_name)
 
-        # self.ui.waves_cb.disconnect()
-        # self.ui.waves_cb_model.setStringList(self.waves_namelist)
-        # self.ui.waves_cb.setCurrentIndex(0)
-        # self.ui.waves_cb.currentIndexChanged.connect(self.set_current_wav)
+        self.ui.waves_cb.disconnect()
+        self.ui.waves_cb_model.setStringList(self.waves_namelist)
+        self.ui.waves_cb.setCurrentIndex(0)
+        self.ui.waves_cb.currentIndexChanged.connect(self.set_current_wav)
 
         # Update current wav
         self.set_current_wav(0)
 
         #Enable replay and save buttons:
-        # self.ui.replay_wav_button.setDisabled(False)
+        #self.ui.replay_wav_button.setDisabled(False)
         # self.ui.export_wav_button.setDisabled(False)
 
         # Compute the embedding
