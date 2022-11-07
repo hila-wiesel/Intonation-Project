@@ -757,7 +757,7 @@ class UI(QDialog):
         i += 1
         j=0
         j+= 1
-        self.titel_part_oneII = QLabel("Analyze :")
+        self.titel_part_oneII = QLabel("<b>Analyze :</b>")
         browser_layout.addWidget(self.titel_part_oneII , j, 4)
         self.titel_part_oneII.setFont(QFont('Times', 25))
         j+= 1
