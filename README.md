@@ -56,11 +56,11 @@ You can then try the toolbox:
 `python demo_toolbox.py` 
 
 ### ToolBox explanation - youtube video
-[<img src="https://github.com/hila-wiesel/Intonation-Project/blob/cc40b4cef2157d56648dbfa53d390de61b96c715/pictures/Image%20for%20video.png" width="50%">](https://youtu.be/yHDc6edlLYs "Now in Android: 55")
+[<img src="https://github.com/hila-wiesel/Intonation-Project/blob/cc40b4cef2157d56648dbfa53d390de61b96c715/pictures/Image%20for%20video.png" width="50%">](https://youtu.be/gYPRfR5BTds "Now in Android: 55")
 
-### Examples of the following sentences:
+### Examples of the following sentences - youtube video
 
-#### 1) I did not steal '*your*' bag - https://www.youtube.com/watch?v=27MNsmxJVmM
-#### 2) I did not '*steal*' your bag - https://www.youtube.com/watch?v=MIWeyB04Ypw
-#### 3) '*Hello*' this is our finel project - https://www.youtube.com/watch?v=llTLtwpRdB4
+#### 1) I did not steal '*your*' bag - https://youtu.be/MfHIzr1g_1c
+#### 2) I did not '*steal*' your bag - https://youtu.be/VfVKxUXDhN0
+#### 3) '*Hello*' this is our finel project - https://youtu.be/cqkYHR0h8us
 
